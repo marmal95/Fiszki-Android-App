@@ -1,0 +1,258 @@
+<resources>
+    <string name="interstitial_full_screen" translatable="false">ca-app-pub-7589746352968073/7206581544</string>
+    <string name="baner_ad" translatable="false">ca-app-pub-7589746352968073/8899428742</string>
+
+    <string name="getTokenPhp" translatable="false">https://fiszki.xyz/api/getToken.php</string>
+    <string name="registerPhp" translatable="false">https://fiszki.xyz/api/register.php</string>
+    <string name="activateAccountPhp" translatable="false">https://fiszki.xyz/api/activateAccount.php</string>
+    <string name="forgotPasswordPhp" translatable="false">https://fiszki.xyz/api/forgotPassword.php</string>
+    <string name="listsByTokenPhp" translatable="false">https://fiszki.xyz/api/listsByToken.php</string>
+    <string name="searchByNamePhp" translatable="false">https://fiszki.xyz/api/searchByName.php</string>
+    <string name="getListContentByHashPhp" translatable="false">https://fiszki.xyz/api/getListContentByHash.php</string>
+    <string name="likeListPhp" translatable="false">https://fiszki.xyz/api/likeList.php</string>
+    <string name="unlikeListPhp" translatable="false">https://fiszki.xyz/api/unlikeList.php</string>
+    <string name="userInfoByToken" translatable="false">https://fiszki.xyz/api/userInfoByToken.php</string>
+    <string name="editListPhp" translatable="false">https://fiszki.xyz/api/editList.php</string>
+    <string name="addListPhp" translatable="false">https://fiszki.xyz/api/addList.php</string>
+    <string name="searchListByNamePhp" translatable="false">https://fiszki.xyz/api/searchByName.php</string>
+    <string name="deleteAccountPhp" translatable="false">https://fiszki.xyz/api/deleteAccount.php</string>
+    <string name="changeFullNamePhp" translatable="false">https://fiszki.xyz/api/changeFullName.php</string>
+    <string name="changePasswordPhp" translatable="false">https://fiszki.xyz/api/changePassword.php</string>
+
+    <string name="shareFlashcardUrl" translatable="false">http://fiszki.xyz/flashcard.php?id=%1$s</string>
+
+    <string name="app_name" translatable="false">Fiszki</string>
+    <string name="loginLogoDesc" translatable="false">Login Logo</string>
+    <string name="loginLabel">LOGIN</string>
+    <string name="emailAddr">E-mail address</string>
+    <string name="password">Password</string>
+    <string name="stayLoggedIn">Stay logged in</string>
+    <string name="forgotPassword">Forgot password?</string>
+    <string name="createAccount">Create account!</string>
+    <string name="activateAccount">Activate account!</string>
+    <string name="noConnectionWarning">No internet connection! App may not work properly.</string>
+    <string name="fillEmailAndPassword">Please fill your e-mail and password</string>
+    <string name="emailOrPasswIncorrect">E-mail or password is incorrect</string>
+    <string name="connectionProblem">Could not connect</string>
+    <string name="accountNotActive">Account has not been activated yet</string>
+    <string name="registerLogoDesc" translatable="false">Register Logo</string>
+    <string name="username">Username</string>
+    <string name="fillAllAreas">Please fill all input areas</string>
+    <string name="accountCreated">Account has been created successfully</string>
+    <string name="incorrectFormat">Some data may be incorrect</string>
+    <string name="errorOccurred">An error occurred</string>
+    <string name="emailFormatIncorrect">Email is incorrect</string>
+    <string name="register">REGISTER</string>
+    <string name="clearForm">Clear form</string>
+    <string name="confirmEmail">CONFIRM EMAIL</string>
+    <string name="code">Code</string>
+    <string name="fillEmailAndCode">Please fill your email and activation code</string>
+    <string name="accountActivated">Account has been activated successfully</string>
+    <string name="codeIncorrect">Code is incorrect</string>
+    <string name="emailIncorrect">Email is incorrect</string>
+    <string name="dataFormatIncorrect">Data format is incorrect</string>
+    <string name="restPassDesc" translatable="false">Restore Password Logo</string>
+    <string name="activateLogoDesc" translatable="false">Activate Logo</string>
+    <string name="restorePassword">RESTORE PASSWORD</string>
+    <string name="emailSendError">Error while sending e-mail</string>
+    <string name="newPasswordSent">New password has been sent to your email</string>
+    <string name="userNotExist">Such user does not exist</string>
+    <string name="nameOrEmailIncorrect">Name or email is incorrect</string>
+    <string name="settings">Settings</string>
+    <string name="myFiszki">My flashcards</string>
+    <string name="myFavFiszki">Favourite flashcards</string>
+    <string name="recommendedFiszki">Recommended flashcards</string>
+    <string name="searchFiszki">Find flashcards</string>
+    <string name="localFiszki">Local flashcards</string>
+    <string name="flag1Desc" translatable="false">Flag logo</string>
+    <string name="timeCreated">Created %1$s</string>
+    <string name="deleteListPhp" translatable="false">http://fiszki.xyz/api/deleteList.php</string>
+
+    <string-array name="myFlashcardsMenuOptions">
+        <item>Open</item>
+        <item>Edit / Preview</item>
+        <item>Like</item>
+        <item>Share</item>
+        <item>Remove</item>
+        <item>Download</item>
+    </string-array>
+
+    <string-array name="favouriteFlashcardsMenuOptions">
+        <item>Open</item>
+        <item>Preview</item>
+        <item>Unlike</item>
+        <item>Share</item>
+        <item>Download</item>
+    </string-array>
+
+    <string-array name="favouriteFlashcardsMenuOptions_admin">
+        <item>Open</item>
+        <item>Edit / Preview</item>
+        <item>Unlike</item>
+        <item>Share</item>
+        <item>Download</item>
+        <item>Delete</item>
+    </string-array>
+
+    <string-array name="recommendedFlashcardsMenuOptions">
+        <item>Open</item>
+        <item>Preview</item>
+        <item>Like</item>
+        <item>Share</item>
+        <item>Download</item>
+    </string-array>
+
+    <string-array name="recommendedFlashcardsMenuOptions_admin">
+        <item>Open</item>
+        <item>Edit / Preview</item>
+        <item>Like</item>
+        <item>Share</item>
+        <item>Download</item>
+        <item>Delete</item>
+    </string-array>
+
+    <string-array name="localFlashcardsMenuOptions">
+        <item>Open</item>
+        <item>Preview</item>
+        <item>Remove</item>
+    </string-array>
+
+    <string-array name="previewFlashcardsMenuOptions">
+        <item>Edit</item>
+        <item>Remove</item>
+    </string-array>
+
+    <string-array name="searchFlashcardsMenuOptions">
+        <item>Open</item>
+        <item>Preview</item>
+        <item>Like</item>
+        <item>Share</item>
+        <item>Download</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>Polish</item>
+        <item>English</item>
+        <item>German</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>Italian</item>
+        <item>Latin</item>
+    </string-array>
+
+    <string-array name="searchOptions">
+        <item>Name</item>
+        <item>Hash</item>
+    </string-array>
+
+    <string name="likedFlashcard">Flashcard has been liked</string>
+    <string name="tokenIncorrect">User token is incorrect</string>
+    <string name="hashIncorrect">Flashcard hash is incorrect</string>
+    <string name="flashcardAlreadyLiked">You have already liked that flashcard</string>
+    <string name="couldNotLike">Could not like that flashcard</string>
+    <string name="unlikedFlashcard">Flashcard has been unliked</string>
+    <string name="couldNotUnlike">Could not unlike that flashcard</string>
+    <string name="flashcardAlreadyunliked">You do not like that flashcard</string>
+    <string name="flashcardDeleted">Flashcard has been deleted</string>
+    <string name="flashcardNotFound">Flashcard could not be found</string>
+    <string name="nonAuthor">That flashcard is not yours!</string>
+    <string name="fiszkiMenu">Fiszki Menu</string>
+    <string name="myFlashcards">My flashcards</string>
+    <string name="flashcardPreview">Flashcard preview</string>
+    <string name="action_addWord">Add new word</string>
+    <string name="action_search">Search word</string>
+    <string name="search_hint">Look for words</string>
+    <string name="addNewFlashcard">Add new flashcard</string>
+    <string name="translateFrom">Translate from</string>
+    <string name="translateTo">Translate to</string>
+    <string name="flashcardName">Flashcard name</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="actionSave">Save</string>
+    <string name="flashcardSaved">Flashcard has been saved</string>
+    <string name="noDataToSave">No data</string>
+    <string name="decodeWordsProblem">An error ocured while decoding words</string>
+    <string name="sthHasGoneWrong">Something has gone wrong</string>
+    <string name="flashcardAdded">Flashcard has been added</string>
+    <string name="cantAddFlashcard">Could not add flashcard</string>
+    <string name="action_editName">Edit name</string>
+    <string name="wordToTranslate">Word to translate</string>
+    <string name="wordTranslation">Word translation</string>
+    <string name="addWord">Add word</string>
+    <string name="couldNotCreateFolder">Could not create folder. Check Fiszki memory access permission</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="deleteError">Could not delete</string>
+    <string name="searchQuery">Search query</string>
+    <string name="searchFlashcard">Find flashcards</string>
+    <string name="search">SEARCH</string>
+    <string name="noFlashcardsFound">No flashcards found</string>
+    <string name="noVariables">No variables</string>
+    <string name="incorrcectNameFormat">Name format is incorrect</string>
+    <string name="languageIncorrect">Language is incorrect</string>
+    <string name="displaySettings">Display settings</string>
+    <string name="displayInSequence">Display in sequence</string>
+    <string name="displayReverseSequence">Display in reverse sequence</string>
+    <string name="displayRandomly">Display randomly</string>
+    <string name="displayOrder">Display order</string>
+    <string name="repeatNotKnown">Repeat not known</string>
+    <string name="reverseLanguages">Reverse languages</string>
+    <string name="createRevisionList">Create revision list</string>
+    <string name="inputMode">Input mode</string>
+    <string name="decisionMode">Decision mode</string>
+    <string name="writeMode">Write mode</string>
+    <string name="textToSpeech">Text to speech</string>
+    <string name="speechSpeed">Speech speed</string>
+    <string name="skipTextInBrackets">Skip text in brackets</string>
+    <string name="readWordsAutomatically">Read word to translate automatically</string>
+    <string name="flashcardProgress" translatable="false">%1$s/%2$s</string>
+    <string name="know">I know</string>
+    <string name="dontKnow">I do not know</string>
+    <string name="showTranslation">Show translation</string>
+    <string name="enableTextToSpeech">Enable text to speech</string>
+    <string name="userAccount">User account</string>
+    <string name="changeName">Change name</string>
+    <string name="changePassword">Change password</string>
+    <string name="logout">Logout</string>
+    <string name="deleteAccount">Delete account</string>
+    <string name="saveSettingsQuestion">Do you want to save settings before exit?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="revList">[Rev] %1$s</string>
+    <string name="languageNotSupported">Language %1$s is not supported by TTS</string>
+    <string name="ttsNotSupported">TextToSpeech is not supported</string>
+    <string name="submit">SUBMIT</string>
+    <string name="accountDeleted">Account has been deleted</string>
+    <string name="userLogout">You have been logged out</string>
+    <string name="name">Name</string>
+    <string name="changeUsername">Change username</string>
+    <string name="fillNewName">Fill new name</string>
+    <string name="userNameChanged">Your name has been changed</string>
+    <string name="oldPass">Old password</string>
+    <string name="newPass">New password</string>
+    <string name="repNewPass">Repeat new password</string>
+    <string name="passwordsDifferent">New passwords are different</string>
+    <string name="newPasswordTheSameToOld">New password is identical to old password</string>
+    <string name="passwordTooShort">Incorrect password format</string>
+    <string name="incorrectActualPassword">Incorrect actual password</string>
+    <string name="passwordHasBeenChanged">Your password has been changed</string>
+    <string name="noLocalFlashcards">No local flashcards, download some first</string>
+    <string name="cancelLearningQuestion">Do you want to exit?</string>
+    <string name="result">Result</string>
+    <string name="yourResultInfo">Your result from %1$s flashcard</string>
+    <string name="ttsOnTextClickInfo">Click on word text while running flashcard to speak current word</string>
+    <string name="fiszkiWebInformationAddList">You can easily and quickly add new Flashcards on our page:\\n http://www.fiszki.xyz</string>
+    <string name="needToLoginAgain">You have been logged out.\\nPlease login again.</string>
+    <string name="reportBug">Bug report or suggestion</string>
+    <string name="emailSubject">E-mail subject</string>
+    <string name="emailMessage">E-mail message</string>
+    <string name="send">Send</string>
+    <string name="noEmailClientInstalled">\"There are no email clients installed.\"</string>
+    <string name="sendEmail">Send e-mail…</string>
+    <string name="reportBugOrSuggestion">Report bug or suggestion</string>
+    <string name="userInterface">User interface</string>
+    <string name="fontSize">Font size in Flashcard displaying</string>
+    <string name="readTransAutomatically">Read word translation automatically</string>
+    <string name="locale">en</string>
+    <string name="flashcardEmpty">Flashcard is empty</string>
+
+</resources>

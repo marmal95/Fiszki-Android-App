@@ -1,0 +1,33 @@
+<resources>
+
+    <!-- Base Application Theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Set colors. -->
+        <item name="colorPrimary">@color/Th1_primary</item>
+        <item name="colorPrimaryDark">@color/Th1_primary_dark</item>
+        <item name="colorAccent">@color/Th1_accent</item>
+
+        <!-- Set text colors. -->
+        <item name="android:textColorPrimary">@color/Th1_primary_text</item>
+        <item name="android:textColorSecondary">@color/Th1_secondary_text</item>
+        <item name="android:textColorHint">@color/Th1_secondary_text</item>
+
+    </style>
+
+    <!-- Base Application Theme. -->
+    <!-- Without Action Bar and with coloured background. -->
+    <style name="AppTheme.ColorBackground" parent="AppTheme">
+        <item name="android:windowBackground">@color/activityBackground</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.DarkTextColor" parent="AppTheme">
+        <item name="android:textColorPrimary">@color/Th1_darkColor_text</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+</resources>

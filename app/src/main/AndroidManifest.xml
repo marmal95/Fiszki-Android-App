@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="fiszki.xyz.fiszkiapp">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/logo_icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.LoginActivity"
+            android:theme="@style/AppTheme.ColorBackground">
+        </activity>
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:theme="@style/AppTheme.ColorBackground" />
+        <activity
+            android:name=".activities.ActivateActivity"
+            android:theme="@style/AppTheme.ColorBackground" />
+        <activity
+            android:name=".activities.RestorePasswordActivity"
+            android:theme="@style/AppTheme.ColorBackground" />
+        <activity android:name=".activities.MenuActivity" />
+        <activity
+            android:name=".activities.MyFlashcardsActivity"
+            android:parentActivityName=".activities.MenuActivity"
+            android:theme="@style/AppTheme.DarkTextColor" />
+        <activity
+            android:name=".activities.FavouriteFlashcardsActivity"
+            android:parentActivityName=".activities.MenuActivity"
+            android:theme="@style/AppTheme.DarkTextColor" />
+        <activity
+            android:name=".activities.RecommendedFlashcardsActivity"
+            android:parentActivityName=".activities.MenuActivity"
+            android:theme="@style/AppTheme.DarkTextColor" />
+        <activity
+            android:name=".activities.PreviewFlashcardActivity"
+            android:theme="@style/AppTheme.DarkTextColor" />
+        <activity
+            android:name=".activities.LocalFlashcardsActivity"
+            android:theme="@style/AppTheme.DarkTextColor" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:theme="@style/AppTheme.DarkTextColor" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:theme="@style/AppTheme.DarkTextColor" />
+        <activity android:name=".activities.DisplayFlashcardActivity"
+            android:theme="@style/AppTheme.DarkTextColor"/>
+        <activity android:name=".activities.ResultActivity"/>
+
+        <activity android:name=".activities.SlashScreen"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

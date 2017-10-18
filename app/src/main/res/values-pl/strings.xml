@@ -1,0 +1,229 @@
+<resources>
+
+    <string name="loginLabel">ZALOGUJ</string>
+    <string name="emailAddr">Adres e-mail</string>
+    <string name="password">Hasło</string>
+    <string name="stayLoggedIn">Zapamiętaj mnie</string>
+    <string name="forgotPassword">Zapomniałeś hasła?</string>
+    <string name="createAccount">Załóż konto!</string>
+    <string name="activateAccount">Aktywuj konto!</string>
+    <string name="noConnectionWarning">Brak połączenia z internetem. Aplikacja może nie działać poprawnie</string>
+    <string name="fillEmailAndPassword">Proszę podać e-mail oraz hasło</string>
+    <string name="emailOrPasswIncorrect">E-mail lub hasło jest naprawidłowe</string>
+    <string name="connectionProblem">Nie udało się nawiązać połączenia</string>
+    <string name="accountNotActive">Konto nie zostało jeszcze aktywowane</string>
+    <string name="username">Nazwa użytkownika</string>
+    <string name="fillAllAreas">Proszę uzupełnić wszystkie pola</string>
+    <string name="accountCreated">Konto zostało utworzone</string>
+    <string name="incorrectFormat">Niektóre dane mogą być niepoprawne</string>
+    <string name="errorOccurred">Wystąpił nieoczekiwany błąd</string>
+    <string name="emailFormatIncorrect">E-mail jest nieprawidłowy</string>
+    <string name="register">ZAREJESTRUJ</string>
+    <string name="clearForm">Wyczyść formularz</string>
+    <string name="confirmEmail">POTWIEDŹ E-MAIL</string>
+    <string name="code">Kod</string>
+    <string name="fillEmailAndCode">Proszę podać e-mail oraz kod aktywacyjny</string>
+    <string name="accountActivated">Konto zostało aktywowane</string>
+    <string name="codeIncorrect">Kod jest nieprawidłowy</string>
+    <string name="emailIncorrect">E-mail jest nieprawidłowy</string>
+    <string name="dataFormatIncorrect">Format danych jest naprawidłowy</string>
+    <string name="restorePassword">PRZYPOMNIJ</string>
+    <string name="emailSendError">Błąd podczas wysyłania maila</string>
+    <string name="newPasswordSent">Nowe hasło zostało wysłane na Twój e-mail</string>
+    <string name="userNotExist">Nie ma takiego użytkownika</string>
+    <string name="nameOrEmailIncorrect">Nazwa lub e-mail jest nieprawidłowy</string>
+    <string name="settings">Ustawienia</string>
+    <string name="myFiszki">Moje Fiszki</string>
+    <string name="myFavFiszki">Ulubione Fiszki</string>
+    <string name="recommendedFiszki">Polecane Fiszki</string>
+    <string name="searchFiszki">Szukaj Fiszek</string>
+    <string name="localFiszki">Lokalne Fiszki</string>
+    <string name="timeCreated">Utworzono %1$s</string>
+
+    <string-array name="myFlashcardsMenuOptions">
+        <item>Otwórz</item>
+        <item>Edytuj / Podgląd</item>
+        <item>Dodaj do ulubionych</item>
+        <item>Udostępnij</item>
+        <item>Usuń</item>
+        <item>Pobierz</item>
+    </string-array>
+
+    <string-array name="favouriteFlashcardsMenuOptions">
+        <item>Otwórz</item>
+        <item>Podgląd</item>
+        <item>Usuń z ulubionych</item>
+        <item>Udostępnij</item>
+        <item>Pobierz</item>
+    </string-array>
+
+    <string-array name="favouriteFlashcardsMenuOptions_admin">
+        <item>Otwórz</item>
+        <item>Edycja / Podgląd</item>
+        <item>Usuń z ulubionych</item>
+        <item>Udostępnij</item>
+        <item>Pobierz</item>
+        <item>Usuń</item>
+    </string-array>
+
+    <string-array name="recommendedFlashcardsMenuOptions">
+        <item>Otwórz</item>
+        <item>Podgląd</item>
+        <item>Dodaj do ulubionych</item>
+        <item>Udostępnij</item>
+        <item>Pobierz</item>
+    </string-array>
+
+    <string-array name="recommendedFlashcardsMenuOptions_admin">
+        <item>Otwórz</item>
+        <item>Edycja / Podgląd</item>
+        <item>Dodaj do ulubionych</item>
+        <item>Udostępnij</item>
+        <item>Pobierz</item>
+        <item>Usuń</item>
+    </string-array>
+
+    <string-array name="localFlashcardsMenuOptions">
+        <item>Otwórz</item>
+        <item>Podgląd</item>
+        <item>Usuń</item>
+    </string-array>
+
+    <string-array name="previewFlashcardsMenuOptions">
+        <item>Edytuj</item>
+        <item>Usuń</item>
+    </string-array>
+
+    <string-array name="searchFlashcardsMenuOptions">
+        <item>Otwórz</item>
+        <item>Podgląd</item>
+        <item>Dodaj do ulubionych</item>
+        <item>Udostępnij</item>
+        <item>Pobierz</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>Polski</item>
+        <item>Angielski</item>
+        <item>Niemiecki</item>
+        <item>Hiszpański</item>
+        <item>Francuski</item>
+        <item>Włoski</item>
+        <item>Łaciński</item>
+    </string-array>
+
+    <string-array name="searchOptions">
+        <item>Nazwa</item>
+        <item>Hash</item>
+    </string-array>
+
+    <string name="likedFlashcard">Fiszka została dodana</string>
+    <string name="tokenIncorrect">Token użytkownika jest naprawidłowy</string>
+    <string name="hashIncorrect">Hash Fiszki jest nieprawidłowy</string>
+    <string name="flashcardAlreadyLiked">Już lubisz tę Fiszkę</string>
+    <string name="couldNotLike">Nie udało się polubić tej listy</string>
+    <string name="unlikedFlashcard">Przestałeś lubić tę Fiszkę</string>
+    <string name="couldNotUnlike">Nie udało się odlubić tej listy</string>
+    <string name="flashcardAlreadyunliked">Nie lubisz tej Fiszki</string>
+    <string name="flashcardDeleted">Fiszka została usunięta</string>
+    <string name="flashcardNotFound">Fiszka nie została znaleziona</string>
+    <string name="nonAuthor">Ta Fiszka nie jest Twoja</string>
+    <string name="fiszkiMenu">Menu Fiszek</string>
+    <string name="myFlashcards">Moje Fiszki</string>
+    <string name="flashcardPreview">Podgląd Fiszki</string>
+    <string name="action_addWord">Dodaj nowe słówko</string>
+    <string name="action_search">Szukaj</string>
+    <string name="search_hint">Szukaj słówek</string>
+    <string name="addNewFlashcard">Dodaj nową fiszkę</string>
+    <string name="translateFrom">Przetłumacz z</string>
+    <string name="translateTo">Przetłumacz na</string>
+    <string name="flashcardName">Nazwa Fiszki</string>
+    <string name="add">Dodaj</string>
+    <string name="cancel">Anuluj</string>
+    <string name="actionSave">Zapisz</string>
+    <string name="flashcardSaved">Fiszka została zapisana</string>
+    <string name="noDataToSave">Brak danych</string>
+    <string name="decodeWordsProblem">Wystąpił błąd podczas dekodowania słówek</string>
+    <string name="sthHasGoneWrong">Coś poszło nie tak</string>
+    <string name="flashcardAdded">Fiszka została dodana</string>
+    <string name="cantAddFlashcard">Nie udało się dodać Fiszki</string>
+    <string name="action_editName">Zmień nazwę</string>
+    <string name="wordToTranslate">Słowo do przetłumaczenia</string>
+    <string name="wordTranslation">Przetłumaczone słowo</string>
+    <string name="addWord">Dodaj słówko</string>
+    <string name="couldNotCreateFolder">Nie udało się stworzyć folderu. Sprawdź uprawnienia Fiszek do Pamięci</string>
+    <string name="downloaded">Zapisano</string>
+    <string name="deleteError">Nie udało się usunąć</string>
+    <string name="searchQuery">Szukaj…</string>
+    <string name="searchFlashcard">Szukaj Fiszek</string>
+    <string name="search">SZUKAJ</string>
+    <string name="noFlashcardsFound">Żadne Fiszki nie zostały znalezione</string>
+    <string name="noVariables">Brak zmiennych</string>
+    <string name="incorrcectNameFormat">Format nazwy jest naprawidłowy</string>
+    <string name="languageIncorrect">Język jest nieprawidłowy</string>
+    <string name="displaySettings">Ustawienia wyświetlania</string>
+    <string name="displayInSequence">Wyświetlaj po kolei</string>
+    <string name="displayReverseSequence">Wyświetlaj od końca</string>
+    <string name="displayRandomly">Wyświetlaj losowo</string>
+    <string name="displayOrder">Kolejność wyświetlania</string>
+    <string name="repeatNotKnown">Powtarzaj nieznane</string>
+    <string name="reverseLanguages">Odwróć języki</string>
+    <string name="createRevisionList">Twórz listę powtórkową</string>
+    <string name="inputMode">Tryb wpisywania</string>
+    <string name="decisionMode">Tryb decyzji</string>
+    <string name="writeMode">Tryb wpisywania</string>
+    <string name="textToSpeech">Syntezator mowy</string>
+    <string name="speechSpeed">Prędkość czytania</string>
+    <string name="skipTextInBrackets">Pomiń tekst w nawiasach</string>
+    <string name="readWordsAutomatically">Czytaj słówko do tłumaczenia automatycznie</string>
+    <string name="know">UMIEM</string>
+    <string name="dontKnow">NIE UMIEM</string>
+    <string name="showTranslation">POKAŻ TŁUMACZENIE</string>
+    <string name="enableTextToSpeech">Włącz czytanie słówek</string>
+    <string name="userAccount">Konto użytkownika</string>
+    <string name="changeName">Zmień nazwę</string>
+    <string name="changePassword">Zmień hasło</string>
+    <string name="logout">Wyloguj</string>
+    <string name="deleteAccount">Usuń konto</string>
+    <string name="saveSettingsQuestion">Chcesz zapisać ustawienia zanim wyjdziesz?</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+    <string name="revList">[Powt] %1$s</string>
+    <string name="languageNotSupported">Język %1$s nie jest wspierany</string>
+    <string name="ttsNotSupported">Syntezacja mowy nie jest wspierana przez Twoje urządzenie</string>
+    <string name="submit">ZATWIERDŹ</string>
+    <string name="accountDeleted">Konto zostało usunięte</string>
+    <string name="userLogout">Zostałeś wylogowany</string>
+    <string name="name">Nazwa</string>
+    <string name="changeUsername">Zmień login</string>
+    <string name="fillNewName">Podaj nową nazwę</string>
+    <string name="userNameChanged">Twoja nazwa użytkownika została zmieniona</string>
+    <string name="oldPass">Stare hasło</string>
+    <string name="newPass">Nowe hasło</string>
+    <string name="repNewPass">Powtórz nowe hasło</string>
+    <string name="passwordsDifferent">Nowe hasła się różnią</string>
+    <string name="newPasswordTheSameToOld">Nowe hasło jest identyczne jak stare hasło</string>
+    <string name="passwordTooShort">Format hasła jest nieprawidłowy</string>
+    <string name="incorrectActualPassword">Nieprawidłowe hasło</string>
+    <string name="passwordHasBeenChanged">Twoje hasło zostało zmienione</string>
+    <string name="noLocalFlashcards">Brak lokalnych Fiszek. Najpierw pobierz jakieś.</string>
+    <string name="cancelLearningQuestion">Czy na pewno chcesz wyjść?</string>
+    <string name="result">Wynik</string>
+    <string name="yourResultInfo">Twój wynik z Fiszki: $1%s wynosi</string>
+    <string name="ttsOnTextClickInfo">Kliknij słówko podczas nauki, aby posłuchać wymowy</string>
+    <string name="fiszkiWebInformationAddList">Możesz szybko i wygodnie dodawać nowe Fiszki na naszej stronie: \\nhttp://www.fiszki.xyz</string>
+    <string name="needToLoginAgain">Zostałeś wylogowany.\\nZaloguj się ponownie.</string>
+    <string name="reportBug">Zgłaszanie błędów lub sugestii</string>
+    <string name="emailSubject">Temat e-maila</string>
+    <string name="emailMessage">Wiadomość e-mail</string>
+    <string name="send">Wyślij</string>
+    <string name="noEmailClientInstalled">Brak zainstalowanych klientów pocztowych.</string>
+    <string name="sendEmail">Wyślij e-mail</string>
+    <string name="reportBugOrSuggestion">Zgłoś błąd lub wyślij sugestię</string>
+    <string name="userInterface">Interfejs użytkownika</string>
+    <string name="fontSize">Wielkość czcionki przy wyświetlaniu Fiszki</string>
+    <string name="readTransAutomatically">Czytaj tłumaczenie słówka automatycznie</string>
+    <string name="locale">pl</string>
+    <string name="flashcardEmpty">Fiszka jest pusta</string>
+
+</resources>
