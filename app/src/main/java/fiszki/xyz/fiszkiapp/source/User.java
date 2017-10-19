@@ -1,17 +1,13 @@
 package fiszki.xyz.fiszkiapp.source;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
-/**
- * Keeps all necessary information about logged user.
- */
 public class User {
 
     private static User mInstance = null;
 
     private String name = null;
-    private String usr_id = null;
+    private String user_id = null;
     private String email = null;
     private String full_name = null;
     private String permission = null;
@@ -33,8 +29,8 @@ public class User {
         return name;
     }
 
-    public String getUsr_id() {
-        return usr_id;
+    public String getUser_id() {
+        return user_id;
     }
 
     public String getEmail() {
@@ -61,23 +57,35 @@ public class User {
         return user_token;
     }
 
-    public void get_data(Context context){
-        SharedPreferences sharedPreferences = context.getApplicationContext().
-                getSharedPreferences("user_data", 0);
-
-        name = sharedPreferences.getString("user_name", "0");
-        usr_id = sharedPreferences.getString("user_id", "0");
-        email = sharedPreferences.getString("user_email", "0");
-        full_name = sharedPreferences.getString("user_full_name", "0");
-        permission = sharedPreferences.getString("user_permission", "0");
-        time_created = sharedPreferences.getString("user_time_created", "0");
-        last_activity = sharedPreferences.getString("user_last_activity", "0");
-        user_token = sharedPreferences.getString("user_token", "0");
+    public void get_data(Context context) {
+        AppPreferences appPreferences = AppPreferences.getInstance(context);
+        name = appPreferences.getString(AppPreferences.Key.USER_NAME);
+        user_id = appPreferences.getString(AppPreferences.Key.USER_ID);
+        email = appPreferences.getString(AppPreferences.Key.USER_EMAIL);
+        full_name = appPreferences.getString(AppPreferences.Key.USER_FULLNAME);
+        permission = appPreferences.getString(AppPreferences.Key.USER_PERMISSION);
+        time_created = appPreferences.getString(AppPreferences.Key.USER_TIME_CREATED);
+        last_activity = appPreferences.getString(AppPreferences.Key.USER_LAST_ACTIVITY);
+        user_token = appPreferences.getString(AppPreferences.Key.USER_TOKEN);
     }
 
-    public void clear_data(Context context){
+    public void clear_data(Context context) {
+        clear();
+
+        AppPreferences appPreferences = AppPreferences.getInstance(context);
+        appPreferences.remove(AppPreferences.Key.USER_NAME);
+        appPreferences.remove(AppPreferences.Key.USER_ID);
+        appPreferences.remove(AppPreferences.Key.USER_EMAIL);
+        appPreferences.remove(AppPreferences.Key.USER_FULLNAME);
+        appPreferences.remove(AppPreferences.Key.USER_PERMISSION);
+        appPreferences.remove(AppPreferences.Key.USER_TIME_CREATED);
+        appPreferences.remove(AppPreferences.Key.USER_LAST_ACTIVITY);
+        appPreferences.remove(AppPreferences.Key.USER_TOKEN);
+    }
+
+    private void clear() {
         name = null;
-        usr_id = null;
+        user_id = null;
         email = null;
         full_name = null;
         permission= null;
@@ -86,19 +94,5 @@ public class User {
         user_token = null;
 
         mInstance = null;
-
-        SharedPreferences sharedPreferences = context.getApplicationContext().
-                getSharedPreferences("user_data", 0);
-
-        SharedPreferences.Editor edit = sharedPreferences.edit();
-        edit.remove("user_name");
-        edit.remove("user_id");
-        edit.remove("user_email");
-        edit.remove("user_full_name");
-        edit.remove("user_permission");
-        edit.remove("user_time_created");
-        edit.remove("user_last_activity");
-        edit.remove("user_token");
-        edit.apply();
     }
 }

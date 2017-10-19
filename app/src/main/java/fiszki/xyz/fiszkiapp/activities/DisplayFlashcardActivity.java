@@ -48,10 +48,10 @@ import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
-import fiszki.xyz.fiszkiapp.utils.Pair;
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.source.Settings;
 import fiszki.xyz.fiszkiapp.source.User;
+import fiszki.xyz.fiszkiapp.utils.Pair;
 
 public class DisplayFlashcardActivity extends AppCompatActivity implements AsyncResponse {
 

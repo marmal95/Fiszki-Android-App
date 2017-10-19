@@ -24,11 +24,6 @@ public class WordsAdapter extends BaseAdapter implements Filterable {
     private ArrayList<Pair> words;
     private ArrayList<Pair> filteredWords;
 
-    /**
-     * Initialize context & variables
-     * @param context context of called activity
-     * @param words flashcards list
-     */
     public WordsAdapter(Context context, ArrayList<Pair> words) {
         this.mContext = context;
         this.words = words;
@@ -37,42 +32,21 @@ public class WordsAdapter extends BaseAdapter implements Filterable {
         getFilter();
     }
 
-    /**
-     * Get size of user's flashcard
-     * @return object size
-     */
     @Override
     public int getCount() {
         return this.filteredWords.size();
     }
 
-    /**
-     * Get specific item from user list
-     * @param position item index
-     * @return list item
-     */
     @Override
     public Object getItem(int position) {
         return this.filteredWords.get(position);
     }
 
-    /**
-     * Get user list item id
-     * @param position item index
-     * @return current item id
-     */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
-    /**
-     * Create list row view
-     * @param position index
-     * @param convertView current list item view
-     * @param parent parent
-     * @return view
-     */
     @SuppressWarnings("unchecked")
     @NonNull
     @Override
@@ -96,10 +70,6 @@ public class WordsAdapter extends BaseAdapter implements Filterable {
         return convertView;
     }
 
-    /**
-     * Get custom filter
-     * @return filter
-     */
     @Override
     public Filter getFilter() {
         if(wordsFilter == null)
@@ -107,18 +77,11 @@ public class WordsAdapter extends BaseAdapter implements Filterable {
         return wordsFilter;
     }
 
-    /**
-     * Keep reference to children view to avoid unnecessary calls
-     */
     private class ViewHolder{
         TextView word1;
         TextView word2;
     }
 
-    /**
-     * Custom filter for flashcard words
-     * Filter content in words list according to the search text
-     */
     private class WordsFilter extends Filter{
 
         @Override
@@ -128,8 +91,8 @@ public class WordsAdapter extends BaseAdapter implements Filterable {
                 ArrayList<Pair> temp = new ArrayList<>();
 
                 for(Pair hm : words)
-                    if(hm.getLeftValue().contains(constraint.toString())
-                            || hm.getRightValue().contains(constraint.toString()))
+                    if((hm.getLeftValue()).contains(constraint.toString())
+                            || (hm.getRightValue()).contains(constraint.toString()))
                         temp.add(hm);
 
                 filterResults.count = temp.size();
@@ -142,11 +105,6 @@ public class WordsAdapter extends BaseAdapter implements Filterable {
             return filterResults;
         }
 
-        /**
-         * Notify about filtered list to ui
-         * @param constraint text
-         * @param results filtered result
-         */
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {

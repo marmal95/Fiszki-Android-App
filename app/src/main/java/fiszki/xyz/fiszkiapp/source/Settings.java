@@ -1,6 +1,7 @@
 package fiszki.xyz.fiszkiapp.source;
 
 public class Settings {
+
     private boolean displayInSequence;
     private boolean displayRevSequence;
     private boolean displayRandomly;
