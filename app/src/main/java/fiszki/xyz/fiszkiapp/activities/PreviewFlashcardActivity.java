@@ -308,7 +308,7 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
             // Encode POST arguments with UTF-8 Encoder
             String hash = this.flashcard.getHash();
             String name = this.flashcard.getName();
-            String token = User.getInstance(this).getUser_token();
+            String token = User.getInstance(this).getUserToken();
             try {
                 hash = URLEncoder.encode(hash, "UTF-8");
                 words = URLEncoder.encode(words, "UTF-8");
@@ -354,7 +354,7 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         else {
             // Encode POST arguments with UTF-8 Encoder
             String name = this.flashcard.getName();
-            String token = User.getInstance(this).getUser_token();
+            String token = User.getInstance(this).getUserToken();
             try {
                 words = URLEncoder.encode(words, "UTF-8");
                 trans = URLEncoder.encode(trans, "UTF-8");

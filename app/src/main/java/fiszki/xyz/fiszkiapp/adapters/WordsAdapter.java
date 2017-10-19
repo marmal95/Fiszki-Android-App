@@ -18,14 +18,14 @@ import fiszki.xyz.fiszkiapp.R;
 
 public class WordsAdapter extends BaseAdapter implements Filterable {
 
-    private Context mContext;
+    private Context appContext;
     private WordsFilter wordsFilter;
 
     private ArrayList<Pair> words;
     private ArrayList<Pair> filteredWords;
 
     public WordsAdapter(Context context, ArrayList<Pair> words) {
-        this.mContext = context;
+        this.appContext = context;
         this.words = words;
         this.filteredWords = words;
 
@@ -51,12 +51,11 @@ public class WordsAdapter extends BaseAdapter implements Filterable {
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-
         ViewHolder viewHolder;
 
-        if(convertView == null){
+        if(convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.flashcard_preview_row, parent, false);
+            convertView = LayoutInflater.from(appContext).inflate(R.layout.flashcard_preview_row, parent, false);
             viewHolder.word1 = (TextView)convertView.findViewById(R.id.wordToTranslate);
             viewHolder.word2 = (TextView)convertView.findViewById(R.id.wordTranslation);
             convertView.setTag(viewHolder);
@@ -88,15 +87,15 @@ public class WordsAdapter extends BaseAdapter implements Filterable {
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
             if(constraint != null && constraint.length() > 0){
-                ArrayList<Pair> temp = new ArrayList<>();
+                ArrayList<Pair> tempResults = new ArrayList<>();
 
                 for(Pair hm : words)
                     if((hm.getLeftValue()).contains(constraint.toString())
                             || (hm.getRightValue()).contains(constraint.toString()))
-                        temp.add(hm);
+                        tempResults.add(hm);
 
-                filterResults.count = temp.size();
-                filterResults.values = temp;
+                filterResults.count = tempResults.size();
+                filterResults.values = tempResults;
             } else{
                 filterResults.count = words.size();
                 filterResults.values = words;

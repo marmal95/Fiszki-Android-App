@@ -352,7 +352,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
         else {
 
             // Encode both POST arguments(email and password) with UTF-8 Encoder
-            String userToken = User.getInstance(this).getUser_token();
+            String userToken = User.getInstance(this).getUserToken();
             try {
                 userToken = URLEncoder.encode(userToken, "UTF-8");
                 userName = URLEncoder.encode(userName, "UTF-8");
@@ -410,7 +410,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
             else {
 
                 // Encode both POST arguments(email and password) with UTF-8 Encoder
-                String userToken = User.getInstance(this).getUser_token();
+                String userToken = User.getInstance(this).getUserToken();
                 String userEmail = User.getInstance(this).getEmail();
                 try {
                     userToken = URLEncoder.encode(userToken, "UTF-8");
@@ -557,8 +557,8 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
         else {
 
             // Encode both POST arguments(email and password) with UTF-8 Encoder
-            String userToken = User.getInstance(this).getUser_token();
-            String userEmail = User.getInstance(this).getUser_token();
+            String userToken = User.getInstance(this).getUserToken();
+            String userEmail = User.getInstance(this).getUserToken();
             try {
                 userToken = URLEncoder.encode(userToken, "UTF-8");
                 userEmail = URLEncoder.encode(userEmail, "UTF-8");

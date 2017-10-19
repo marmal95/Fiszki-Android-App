@@ -402,7 +402,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
 
             // Encode POST arguments with UTF-8 Encoder
             try{
-                userToken = URLEncoder.encode(User.getInstance(this).getUser_token(), "UTF-8");
+                userToken = URLEncoder.encode(User.getInstance(this).getUserToken(), "UTF-8");
                 hash = URLEncoder.encode(hash, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

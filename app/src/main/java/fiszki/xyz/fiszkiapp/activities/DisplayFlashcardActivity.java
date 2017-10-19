@@ -788,7 +788,7 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
 
             // Encode POST arguments with UTF-8 Encoder
             String name = getString(R.string.revList, flashcard.getName());
-            String token = User.getInstance(this).getUser_token();
+            String token = User.getInstance(this).getUserToken();
             try {
                 strArr_words = URLEncoder.encode(strArr_words, "UTF-8");
                 strArr_trans = URLEncoder.encode(strArr_trans, "UTF-8");

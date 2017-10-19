@@ -59,7 +59,7 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
         otherwise application may be crashed as User.user_token == null
         or there is no user_token saved needed to download all data
          */
-        String user_token = User.getInstance(this).getUser_token();
+        String user_token = User.getInstance(this).getUserToken();
         if(user_token == null)
             logout();
         else

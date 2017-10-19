@@ -7,13 +7,13 @@ public class User {
     private static User mInstance = null;
 
     private String name = null;
-    private String user_id = null;
+    private String userId = null;
     private String email = null;
-    private String full_name = null;
+    private String fullName = null;
     private String permission = null;
-    private String time_created = null;
-    private String last_activity = null;
-    private String user_token = null;
+    private String timeCreated = null;
+    private String lastActivity = null;
+    private String userToken = null;
 
     private User(Context context){
         get_data(context);
@@ -29,44 +29,44 @@ public class User {
         return name;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public String getUserId() {
+        return userId;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
     public String getPermission() {
         return permission;
     }
 
-    public String getTime_created() {
-        return time_created;
+    public String getTimeCreated() {
+        return timeCreated;
     }
 
-    public String getLast_activity() {
-        return last_activity;
+    public String getLastActivity() {
+        return lastActivity;
     }
 
-    public String getUser_token() {
-        return user_token;
+    public String getUserToken() {
+        return userToken;
     }
 
     public void get_data(Context context) {
         AppPreferences appPreferences = AppPreferences.getInstance(context);
         name = appPreferences.getString(AppPreferences.Key.USER_NAME);
-        user_id = appPreferences.getString(AppPreferences.Key.USER_ID);
+        userId = appPreferences.getString(AppPreferences.Key.USER_ID);
         email = appPreferences.getString(AppPreferences.Key.USER_EMAIL);
-        full_name = appPreferences.getString(AppPreferences.Key.USER_FULLNAME);
+        fullName = appPreferences.getString(AppPreferences.Key.USER_FULLNAME);
         permission = appPreferences.getString(AppPreferences.Key.USER_PERMISSION);
-        time_created = appPreferences.getString(AppPreferences.Key.USER_TIME_CREATED);
-        last_activity = appPreferences.getString(AppPreferences.Key.USER_LAST_ACTIVITY);
-        user_token = appPreferences.getString(AppPreferences.Key.USER_TOKEN);
+        timeCreated = appPreferences.getString(AppPreferences.Key.USER_TIME_CREATED);
+        lastActivity = appPreferences.getString(AppPreferences.Key.USER_LAST_ACTIVITY);
+        userToken = appPreferences.getString(AppPreferences.Key.USER_TOKEN);
     }
 
     public void clear_data(Context context) {
@@ -85,13 +85,13 @@ public class User {
 
     private void clear() {
         name = null;
-        user_id = null;
+        userId = null;
         email = null;
-        full_name = null;
+        fullName = null;
         permission= null;
-        time_created = null;
-        last_activity = null;
-        user_token = null;
+        timeCreated = null;
+        lastActivity = null;
+        userToken = null;
 
         mInstance = null;
     }
