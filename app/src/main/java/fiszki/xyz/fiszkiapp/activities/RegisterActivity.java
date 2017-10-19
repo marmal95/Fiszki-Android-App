@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
 
@@ -68,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
         else if(!Constants.validateEmail(userEmail))
             Toast.makeText(RegisterActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
         else{
-            if(!isOnline())
+            if(!Functions.isOnline(getApplicationContext()))
                 Toast.makeText(RegisterActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
             else {
 
@@ -114,17 +115,6 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
         this.userEmailArea.setText("");
         this.userNameArea.setText("");
         this.userPasswArea.setText("");
-    }
-
-    /**
-     * Verifies if device is connected to the internet.
-     * @return true - if online, false - otherwise
-     */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
     }
 
     /**

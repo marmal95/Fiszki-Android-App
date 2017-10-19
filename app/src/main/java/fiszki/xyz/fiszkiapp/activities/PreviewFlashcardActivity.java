@@ -37,6 +37,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.utils.Pair;
@@ -50,7 +51,6 @@ import fiszki.xyz.fiszkiapp.adapters.WordsAdapter;
  */
 public class PreviewFlashcardActivity extends AppCompatActivity implements AsyncResponse {
 
-    // GUI Components
     private ListView mListView;
     private ProgressBar progressBar;
     private SearchView searchView;
@@ -61,10 +61,6 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
 
     private ArrayList<Pair> mWords;
 
-    /**
-     * {@inheritDoc}
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,35 +68,24 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
 
         setTitle(getString(R.string.flashcardPreview));
 
-        // Initialize GUI Components
         this.mListView = (ListView)findViewById(R.id.listView);
         this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
         this.fab = (FloatingActionButton)findViewById(R.id.fab);
 
-        // Initialize Objects & Variables
         this.mWords = new ArrayList<>();
-
         this.mAdapter = new WordsAdapter(this, this.mWords);
         this.mListView.setAdapter(this.mAdapter);
 
-
-        // We run local flashcard (device may be offline)
         if(getIntent().getIntExtra(Constants.MODE_KEY, Constants.NULL_MODE) == Constants.LOCAL_MODE){
             getFlashcardContent_callback(getIntent().getStringExtra(Constants.CONTENT));
             mAdapter.notifyDataSetChanged();
         }
-        // Here we run global mode (device must me online)
         else if(getIntent().getIntExtra(Constants.MODE_KEY, Constants.NULL_MODE) == Constants.GLOBAL_MODE) {
-            // Check who was the parent
 
-            // If user is owner of list or has enough permission
-            // to edit list or delete - launch additional context menu
-            // and show fab button to add new words
             if(getIntent().getStringExtra(Constants.PARENT).equals(Constants.MY_FLASHCARDS_ACT)
                 || User.getInstance(this).getPermission().contains("l")) {
                 registerForContextMenu(mListView);
                 fab.setVisibility(View.VISIBLE);
-
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -109,23 +94,14 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
                 });
             }
 
-            // In global mode there always exist flashcard passed in intent
             flashcard = getIntent().getParcelableExtra(Constants.LIST);
 
-            // If hash == null it means we create new flashcard
-            // so there is no content yet
             if(flashcard.getHash() != null)
                 getFlashcardContent(flashcard.getHash());
             setTitle(flashcard.getName());
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * @param menu
-     * @param v
-     * @param menuInfo
-     */
     @Override
     @SuppressWarnings("unchecked")
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -143,15 +119,9 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * @param item
-     * @return
-     */
     @Override
     @SuppressWarnings("unchecked")
     public boolean onContextItemSelected(MenuItem item) {
-
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
 
@@ -170,14 +140,8 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     * @param menu
-     * @return
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         MenuInflater inflater = getMenuInflater();
         if(getIntent().getStringExtra(Constants.PARENT).equals(Constants.MY_FLASHCARDS_ACT)
                 || User.getInstance(this).getPermission().contains("l"))
@@ -204,11 +168,6 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     * @param item
-     * @return
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
@@ -228,10 +187,6 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         }
     }
 
-    /**
-     * Prepare data to build POST request.
-     * Runs editList or addList function.
-     */
     private void sendToServer(){
         String[] words = new String[mWords.size()];
         String[] trans = new String[mWords.size()];
@@ -248,21 +203,98 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         String strArr_words = json_words.toString();
         String strArr_trans = json_trans.toString();
 
-        if(this.flashcard.getHash() != null && !this.flashcard.getHash().equals(""))
-            this.editList(strArr_words, strArr_trans);
-        else
-        {
-            this.addList(strArr_words,strArr_trans);
+        manageList(strArr_words, strArr_trans);
+    }
+
+    private void manageList(String words, String translations){
+        if (!Functions.isOnline(getApplicationContext()))
+            Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
+
+        String name = this.flashcard.getName();
+        String hash = this.flashcard.getHash();
+        String token = User.getInstance(this).getUserToken();
+        try {
+            words = URLEncoder.encode(words, "UTF-8");
+            translations = URLEncoder.encode(translations, "UTF-8");
+            name = URLEncoder.encode(name, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String mRequest = "token=" + token + "&words=" + words
+                + "&translations=" + translations + "&name=" + name + "&action=add" + "&type=1"
+                + "&lang=" + flashcard.getLangFrom() + "&lang2=" + flashcard.getLangTo();
+
+        if(hash != null)
+            mRequest += "&hash=" + hash;
+
+        final ConnectionTask mConn = new ConnectionTask(this, Constants.MANAGE_LIST);
+        mConn.execute(getString(R.string.manageListPhp), mRequest);
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mConn.getStatus() == AsyncTask.Status.RUNNING) {
+                    mConn.cancel(true);
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
+                }
+            }
+        }, 10000);
+    }
+
+    private void manageListCallback(int responseCode){
+        switch (responseCode){
+            case 1:
+                Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.flashcardAdded), Toast.LENGTH_LONG).show();
+                break;
+            case 2:
+                Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.tokenIncorrect), Toast.LENGTH_LONG).show();
+                break;
+            case 3:
+                // TODO: Fix message
+                Toast.makeText(PreviewFlashcardActivity.this, "Cooldown", Toast.LENGTH_LONG).show();
+                break;
+            case 4:
+                // TODO: Fix message
+                Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.dataFormatIncorrect), Toast.LENGTH_LONG).show();
+                break;
+            case 6:
+                Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.tokenIncorrect), Toast.LENGTH_LONG).show();
+                break;
+            case 7:
+                // TODO: Fix message
+                Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.incorrcectNameFormat), Toast.LENGTH_LONG).show();
+                break;
+            case 8:
+                // TODO: Fix message
+                Toast.makeText(PreviewFlashcardActivity.this, "Type incorrect", Toast.LENGTH_LONG).show();
+                break;
+            case 9:
+                Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.incorrectFormat), Toast.LENGTH_LONG).show();
+                break;
+            case 10:
+                Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.languageIncorrect), Toast.LENGTH_LONG).show();
+                break;
+            case 11:
+                // TODO: Fix message
+                Toast.makeText(PreviewFlashcardActivity.this, "Action incorrect", Toast.LENGTH_LONG).show();
+                break;
+            case 12:
+                // TODO: Fix message
+                Toast.makeText(PreviewFlashcardActivity.this,  "Owner problem", Toast.LENGTH_LONG).show();
+                break;
+            case 13:
+                Toast.makeText(PreviewFlashcardActivity.this,  getString(R.string.hashIncorrect), Toast.LENGTH_LONG).show();
+                break;
         }
     }
 
-    /**
-     * Download flashcard content from the server.
-     * Builds POST request and runs ConnectionTask.
-     * @param hash flashcard hash
-     */
     private void getFlashcardContent(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             // Encode POST arguments with UTF-8 Encoder
@@ -295,103 +327,6 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         }
     }
 
-    /**
-     * Sends edited flashcard to the server.
-     * Builds POST request and runs ConnectionTask.
-     * @param words JSONArray with words to translate
-     * @param trans JSONArray with words translated
-     */
-    private void editList(String words, String trans) {
-        if (!isOnline())
-            Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
-        else {
-            // Encode POST arguments with UTF-8 Encoder
-            String hash = this.flashcard.getHash();
-            String name = this.flashcard.getName();
-            String token = User.getInstance(this).getUserToken();
-            try {
-                hash = URLEncoder.encode(hash, "UTF-8");
-                words = URLEncoder.encode(words, "UTF-8");
-                trans = URLEncoder.encode(trans, "UTF-8");
-                token = URLEncoder.encode(token, "UTF-8");
-                name = URLEncoder.encode(name, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            // Build POST Request
-            String mRequest = "hash=" + hash + "&token=" + token + "&words=" + words
-                    + "&translations=" + trans + "&name=" + name;
-
-            // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.EDIT_LIST);
-            mConn.execute(getString(R.string.editListPhp), mRequest);
-
-            progressBar.setVisibility(View.VISIBLE);
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mConn.getStatus() == AsyncTask.Status.RUNNING) {
-                        mConn.cancel(true);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, 10000);
-        }
-    }
-
-    /**
-     * Sends new flashcard to the server.
-     * @param words JSONArray with words to translate
-     * @param trans JSONArray with words translated
-     */
-    private void addList(String words, String trans){
-        if (!isOnline())
-            Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
-        else {
-            // Encode POST arguments with UTF-8 Encoder
-            String name = this.flashcard.getName();
-            String token = User.getInstance(this).getUserToken();
-            try {
-                words = URLEncoder.encode(words, "UTF-8");
-                trans = URLEncoder.encode(trans, "UTF-8");
-                token = URLEncoder.encode(token, "UTF-8");
-                name = URLEncoder.encode(name, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            // Build POST Request
-            String mRequest = "token=" + token + "&words=" + words
-                    + "&translations=" + trans + "&name=" + name
-                    + "&lang=" + flashcard.getLangFrom() + "&lang2=" + flashcard.getLangTo();
-
-            // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.ADD_LIST);
-            mConn.execute(getString(R.string.addListPhp), mRequest);
-
-            progressBar.setVisibility(View.VISIBLE);
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mConn.getStatus() == AsyncTask.Status.RUNNING) {
-                        mConn.cancel(true);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, 10000);
-        }
-    }
-
-    /**
-     * Opens dialog to edit flashcard name.
-     */
     private void editFlashcardName(){
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_edit_name);
@@ -424,21 +359,6 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         dialog.show();
     }
 
-    /**
-     * Verifies if device is conntected to the internet.
-     * @return true - if online, false - otherwise
-     */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-    /**
-     * Verifies server response to the getFlashcardContent request
-     * @param output server response
-     */
     private void getFlashcardContent_callback(String output){
         JSONObject c;
         JSONArray wordsToTranslate;
@@ -470,72 +390,6 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         }
     }
 
-    /**
-     * Verifies server response to the editList request
-     * @param output server response
-     */
-    private void editList_callback(String output){
-        switch(output){
-            case "0":
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.errorOccurred), Toast.LENGTH_LONG).show();
-                break;
-            case "1":
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.flashcardSaved), Toast.LENGTH_LONG).show();
-                break;
-            case "2":
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.noDataToSave), Toast.LENGTH_LONG).show();
-                break;
-            case "3":
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.tokenIncorrect), Toast.LENGTH_LONG).show();
-                break;
-            case "4":
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.hashIncorrect), Toast.LENGTH_LONG).show();
-                break;
-            case "5":
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.nonAuthor), Toast.LENGTH_LONG).show();
-                break;
-            case "6":
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.decodeWordsProblem), Toast.LENGTH_LONG).show();
-                break;
-            case "7":
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.decodeWordsProblem), Toast.LENGTH_LONG).show();
-                break;
-        }
-    }
-
-    /**
-     * Verifies server response to the addList request
-     * @param output server response
-     */
-    private void addList_callback(String output){
-        int listStatus = -1;
-        String hash = null;
-        JSONObject c;
-        try {
-            c = new JSONObject(output);
-            listStatus = c.getInt("status");
-            hash = c.getString("hash");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        switch(listStatus){
-            case 1:
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.flashcardAdded), Toast.LENGTH_LONG).show();
-                flashcard.setHash(hash);
-                break;
-            case 2:
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.cantAddFlashcard), Toast.LENGTH_LONG).show();
-                break;
-            default:
-                Log.d("ADD_LIST_RESPONSE_CODE", String.valueOf(listStatus));
-                Toast.makeText(PreviewFlashcardActivity.this, getResources().getString(R.string.sthHasGoneWrong), Toast.LENGTH_LONG).show();
-                break;
-        }
-    }
-
-    /**
-     * Shows dialog to enter new word to add it to flashcard
-     */
     private void addNewWord(){
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_word);
@@ -571,11 +425,6 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         dialog.show();
     }
 
-    /**
-     * Edit word on the given position.
-     * Shows dialog to edit words.
-     * @param position position to edit
-     */
     @SuppressWarnings("unchecked")
     private void editWord(int position){
 
@@ -624,10 +473,6 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         dialog.show();
     }
 
-    /**
-     * {@inheritDoc}
-     * @param result
-     */
     @Override
     public void processFinish(HashMap<String, String> result) {
 
@@ -635,12 +480,14 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
             case Constants.GET_FLASHCARD_CONTENT:
                 this.getFlashcardContent_callback(result.get(Constants.RESULT));
                 break;
-            case Constants.EDIT_LIST:
-                this.editList_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.ADD_LIST:
-                this.addList_callback(result.get(Constants.RESULT));
-                break;
+            case Constants.MANAGE_LIST:
+                try {
+                    JSONObject jsonObject = new JSONObject(result.get(Constants.RESULT));
+                    this.manageListCallback(jsonObject.getInt("status"));
+                    break;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
         }
 
         this.mAdapter.notifyDataSetChanged();

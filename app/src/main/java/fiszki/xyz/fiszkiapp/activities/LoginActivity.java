@@ -22,6 +22,7 @@ import java.util.HashMap;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.source.AppPreferences;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
 
@@ -48,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_login);
 
         // Check if device is connected to the internet
-        if (!isOnline())
+        if (!Functions.isOnline(getApplicationContext()))
             Toast.makeText(LoginActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
 
         // Initialize GUI components
@@ -84,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
         else if (!Constants.validateEmail(userEmail))
             Toast.makeText(LoginActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
         else {
-            if (!isOnline())
+            if (!Functions.isOnline(getApplicationContext()))
                 Toast.makeText(LoginActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
             else {
 
@@ -152,18 +153,6 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
     }
 
     /**
-     * Checks if device is connected to the internet.
-     *
-     * @return true if online, else otherwise
-     */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-    /**
      * ConnectionTask callback.
      * Updates data and ui.
      *
@@ -174,7 +163,6 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
         String output = result.get(Constants.RESULT);
         progressBar.setVisibility(View.GONE);
 
-        Log.d("LOGIN_RESPONSE", output);
         switch (output) {
             case "0":
                 Toast.makeText(LoginActivity.this, getResources().

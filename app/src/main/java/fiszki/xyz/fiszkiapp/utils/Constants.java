@@ -34,6 +34,7 @@ public class Constants {
     public static final String GET_USER_INFO = "GET_USER_INFO";
     public static final String EDIT_LIST = "EDIT_LIST";
     public static final String ADD_LIST = "ADD_LIST";
+    public static final String MANAGE_LIST = "MANAGE_LIST";
     public static final String DOWNLOAD_LIST = "DOWN_LIST";
     public static final String SEARCH_BY_NAME = "SEARCH_BY_NAME";
     public static final String SEARCH_BY_HASH = "SEARCH_BY_HASH";

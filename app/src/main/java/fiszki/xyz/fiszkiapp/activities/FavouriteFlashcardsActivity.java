@@ -34,6 +34,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
@@ -177,22 +178,11 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
     }
 
     /**
-     * Checks internet connection
-     * @return true if device online, false otherwise
-     */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-    /**
      * Gets user's favourite flashcards.
      * Builds POST request and runs ConnectionTask to connect to the server.
      */
     private void getUserFavouriteFlashcards(){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(FavouriteFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else {
             String userToken = "";
@@ -234,7 +224,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
      * @param hash flashcard hash
      */
     private void unlikeFlashcard(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(FavouriteFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             String userToken = "";
@@ -357,7 +347,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
      * @param hash flashcard hash
      */
     private void downloadFlashcard(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(FavouriteFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             // Encode POST arguments with UTF-8 Encoder
@@ -435,7 +425,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
      * @param hash flashcard hash
      */
     private void removeFlashcard(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(FavouriteFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             String userToken = "";

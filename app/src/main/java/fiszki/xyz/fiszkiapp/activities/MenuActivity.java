@@ -30,6 +30,8 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.AppPreferences;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.source.User;
@@ -99,7 +101,7 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
      * Sends POST request to download user info
      */
     private void getUserInfo(String token){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(MenuActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             // Encode POST arguments(email and password) with UTF-8 Encoder
@@ -131,18 +133,6 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
             }, 10000);
         }
     }
-
-    /**
-     * Checks if device is connected to the internet
-     * @return true if device online, false - otherwise
-     */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
 
     public void myFlashcards_onClick(View view) {
         Intent intent = new Intent(MenuActivity.this, MyFlashcardsActivity.class);
@@ -244,16 +234,14 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
         try {
             JSONObject c = new JSONObject(output);
 
-            SharedPreferences pref = getSharedPreferences("user_data", 0);
-            SharedPreferences.Editor edit = pref.edit();
-            edit.putString("user_name", c.getString("name"));
-            edit.putString("user_id", c.getString("user_id"));
-            edit.putString("user_email", c.getString("email"));
-            edit.putString("user_full_name", c.getString("full_name"));
-            edit.putString("user_permission", c.getString("permission"));
-            edit.putString("user_time_created", c.getString("time_created"));
-            edit.putString("user_last_activity", c.getString("last_list_activity"));
-            edit.apply();
+            AppPreferences appPreferences = AppPreferences.getInstance(getApplicationContext());
+            appPreferences.put(AppPreferences.Key.USER_NAME, c.getString("name"));
+            appPreferences.put(AppPreferences.Key.USER_ID, c.getString("user_id"));
+            appPreferences.put(AppPreferences.Key.USER_EMAIL, c.getString("email"));
+            appPreferences.put(AppPreferences.Key.USER_FULLNAME, c.getString("full_name"));
+            appPreferences.put(AppPreferences.Key.USER_PERMISSION, c.getString("permission"));
+            appPreferences.put(AppPreferences.Key.USER_TIME_CREATED, c.getString("time_created"));
+            appPreferences.put(AppPreferences.Key.USER_LAST_ACTIVITY, c.getString("last_list_activity"));
 
             User.getInstance(this).get_data(this);
 

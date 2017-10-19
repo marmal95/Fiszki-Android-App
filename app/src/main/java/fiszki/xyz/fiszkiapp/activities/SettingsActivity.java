@@ -31,6 +31,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.source.User;
@@ -347,7 +348,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
     }
 
     private void changeName(String userName){
-        if (!isOnline())
+        if (!Functions.isOnline(getApplicationContext()))
             Toast.makeText(SettingsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else {
 
@@ -405,7 +406,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
 
     private void deleteAccount(String userPassw) {
         {
-            if (!isOnline())
+            if (!Functions.isOnline(getApplicationContext()))
                 Toast.makeText(SettingsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
             else {
 
@@ -459,18 +460,6 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
                 Toast.makeText(SettingsActivity.this, getResources().getString(R.string.incorrectFormat), Toast.LENGTH_LONG).show();
                 break;
         }
-    }
-
-    /**
-     * Checks if device is connected to the internet.
-     *
-     * @return true if online, else otherwise
-     */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
     }
 
     @Override
@@ -552,7 +541,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
     }
 
     private void changePassword(String oldPass, String newPass, String repNewPass){
-        if (!isOnline())
+        if (!Functions.isOnline(getApplicationContext()))
             Toast.makeText(SettingsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else {
 

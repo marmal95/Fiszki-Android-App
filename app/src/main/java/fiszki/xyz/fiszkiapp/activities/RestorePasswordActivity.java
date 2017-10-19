@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
 
@@ -58,7 +59,7 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
         else if(!Constants.validateEmail(userEmail))
             Toast.makeText(RestorePasswordActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
         else{
-            if(!isOnline())
+            if(!Functions.isOnline(getApplicationContext()))
                 Toast.makeText(RestorePasswordActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
             else {
 
@@ -99,22 +100,6 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
         this.userNameArea.setText("");
     }
 
-    /*
-        Function checks if device is connected to the internet.
-        Returns: true - if connected, false - otherwise.
-    */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-    /*
-    Function if called at the end of ConnectionTask running.
-    Output params contain:
-            response from the server to the request
-     */
     @Override
     public void processFinish(HashMap<String, String> result) {
         /*

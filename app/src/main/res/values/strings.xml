@@ -18,6 +18,7 @@
     <string name="deleteAccountPhp" translatable="false">https://fiszki.xyz/api/deleteAccount.php</string>
     <string name="changeFullNamePhp" translatable="false">https://fiszki.xyz/api/changeFullName.php</string>
     <string name="changePasswordPhp" translatable="false">https://fiszki.xyz/api/changePassword.php</string>
+    <string name="manageListPhp" translatable="false">https://fiszki.xyz/api/manageList.php</string>
 
     <string name="shareFlashcardUrl" translatable="false">http://fiszki.xyz/flashcard.php?id=%1$s</string>
 
@@ -240,7 +241,7 @@
     <string name="result">Result</string>
     <string name="yourResultInfo">Your result from %1$s flashcard</string>
     <string name="ttsOnTextClickInfo">Click on word text while running flashcard to speak current word</string>
-    <string name="fiszkiWebInformationAddList">You can easily and quickly add new Flashcards on our page:\\n http://www.fiszki.xyz</string>
+    <string name="fiszkiWebInformationAddList">You can easily and quickly add new Flashcards on our page: http://www.fiszki.xyz</string>
     <string name="needToLoginAgain">You have been logged out.\\nPlease login again.</string>
     <string name="reportBug">Bug report or suggestion</string>
     <string name="emailSubject">E-mail subject</string>

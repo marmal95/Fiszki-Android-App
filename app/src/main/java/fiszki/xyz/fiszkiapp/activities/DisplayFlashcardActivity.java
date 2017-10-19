@@ -46,6 +46,7 @@ import java.util.Random;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.R;
@@ -623,7 +624,7 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
      * @param hash flashcard hash
      */
     private void getFlashcardContent(String hash) {
-        if (!isOnline())
+        if (!Functions.isOnline(getApplicationContext()))
             Toast.makeText(DisplayFlashcardActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else {
             // Encode POST arguments with UTF-8 Encoder
@@ -753,22 +754,10 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
     }
 
     /**
-     * Verifies if device is connected to the internet.
-     *
-     * @return true - if online, false - otherwise
-     */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-    /**
      * Sends new flashcard to the server.
      */
     private void addList() {
-        if (!isOnline())
+        if (!Functions.isOnline(getApplicationContext()))
             Toast.makeText(DisplayFlashcardActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else {
             String[] words = new String[errorsList.size()];

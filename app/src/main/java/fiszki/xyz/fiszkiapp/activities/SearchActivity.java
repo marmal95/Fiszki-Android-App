@@ -40,6 +40,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
@@ -257,7 +258,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
     }
 
     private void searchByName(String name, String lang){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(SearchActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             // Encode POST arguments with UTF-8 Encoder
@@ -341,7 +342,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
     }
 
     private void searchByHash(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(SearchActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             // Encode POST arguments with UTF-8 Encoder
@@ -395,7 +396,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
      * @param hash flashcard hash
      */
     private void likeFlashcard(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(SearchActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             String userToken = "";
@@ -463,7 +464,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
      * @param hash flashcard hash
      */
     private void downloadFlashcard(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(SearchActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             // Encode POST arguments with UTF-8 Encoder
@@ -533,17 +534,6 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
         }
 
         Toast.makeText(this, getString(R.string.downloaded), Toast.LENGTH_LONG).show();
-    }
-
-    /**
-     * Verifies if device is connected to the internet.
-     * @return true - if online, false - otherwise
-     */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
     }
 
     @Override

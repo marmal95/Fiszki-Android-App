@@ -1,13 +1,10 @@
 package fiszki.xyz.fiszkiapp.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,13 +32,14 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
-import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.utils.Constants;
-import fiszki.xyz.fiszkiapp.source.Flashcard;
-import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
+import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
+import fiszki.xyz.fiszkiapp.source.Flashcard;
+import fiszki.xyz.fiszkiapp.source.Functions;
 import fiszki.xyz.fiszkiapp.source.User;
+import fiszki.xyz.fiszkiapp.utils.Constants;
 
 /*
 TODO: THIS CODE CAN BE SHORTER
@@ -222,7 +220,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
 
     private void getRecommendedFlashcards(String lang){
 
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(RecommendedFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
 
@@ -259,7 +257,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
     }
 
     private void likeFlashcard(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(RecommendedFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             String userToken = "";
@@ -293,17 +291,6 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
                 }
             }, 10000);
         }
-    }
-
-    /*
-    Function checks if device is connected to the internet.
-    Returns: true - if connected, false - otherwise.
-    */
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
     }
 
     private void getRecommendedFlashcards_callback(String output){
@@ -385,7 +372,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
      * @param hash flashcard hash
      */
     private void downloadFlashcard(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(RecommendedFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             // Encode POST arguments with UTF-8 Encoder
@@ -419,11 +406,6 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
         }
     }
 
-    /**
-     * Callback from downloadFlashcard task.
-     * Saves the flashcard content on the device.
-     * @param content server response
-     */
     private void downloadFlashcard_callback(String content){
         File sdCard = new File(android.os.Environment.getExternalStorageDirectory(), "Fiszki");
         // Create Fiszki folder if does not exist
@@ -463,7 +445,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
      * @param hash flashcard hash
      */
     private void removeFlashcard(String hash){
-        if(!isOnline())
+        if(!Functions.isOnline(getApplicationContext()))
             Toast.makeText(RecommendedFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
         else{
             String userToken = "";
