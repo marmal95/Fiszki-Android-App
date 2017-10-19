@@ -26,35 +26,14 @@ public class ConnectionTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
-
-        // params[0] - address
-        // params[1] - request
-        URL mUrl;
-        URLConnection mConnect = null;
-
-        String serverResponse = "";
-        String mUrlAddress = params[0];
+        String urlAddress = params[0];
         String postRequest = params[1];
-
-        try {
-            mUrl = new URL(mUrlAddress);
-            mConnect = mUrl.openConnection();
-            mConnect.setDoOutput(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String serverResponse = "";
 
         try{
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(mConnect.getOutputStream()));
-            writer.write(postRequest);
-            writer.close();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(mConnect.getInputStream()));
-            String respLine;
-
-            while((respLine = reader.readLine()) != null)
-                serverResponse += respLine;
-
+            URLConnection connection = initConnection(urlAddress);
+            sendData(connection, postRequest);
+            receiveData(connection);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,5 +49,37 @@ public class ConnectionTask extends AsyncTask<String, Void, String> {
         temp.put(Constants.MODE, this.mode);
         temp.put(Constants.RESULT, result);
         this.delegate.processFinish(temp);
+    }
+
+    private URLConnection initConnection(String urlAddress) {
+        URLConnection connection = null;
+        URL url;
+
+        try {
+            url = new URL(urlAddress);
+            connection = url.openConnection();
+            connection.setDoOutput(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return connection;
+    }
+
+    private void sendData(URLConnection connection, String postRequest) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+        writer.write(postRequest);
+        writer.close();
+    }
+
+    private String receiveData(URLConnection connection) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String response = "";
+        String responseLine;
+
+        while((responseLine = reader.readLine()) != null)
+            response += responseLine;
+
+        return response;
     }
 }
