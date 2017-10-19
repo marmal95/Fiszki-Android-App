@@ -33,7 +33,7 @@ public class ConnectionTask extends AsyncTask<String, Void, String> {
         try{
             URLConnection connection = initConnection(urlAddress);
             sendData(connection, postRequest);
-            receiveData(connection);
+            serverResponse = receiveData(connection);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,17 +51,13 @@ public class ConnectionTask extends AsyncTask<String, Void, String> {
         this.delegate.processFinish(temp);
     }
 
-    private URLConnection initConnection(String urlAddress) {
+    private URLConnection initConnection(String urlAddress) throws IOException {
         URLConnection connection = null;
         URL url;
 
-        try {
-            url = new URL(urlAddress);
-            connection = url.openConnection();
-            connection.setDoOutput(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        url = new URL(urlAddress);
+        connection = url.openConnection();
+        connection.setDoOutput(true);
 
         return connection;
     }

@@ -50,11 +50,10 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
 
         setTitle(getString(R.string.fiszkiMenu));
 
-        // Initialize GUI Components
         this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
         /*
-        If use has previous version of application he need to be logout
+        If user has previous version of application he need to be logout
         to save his token in static variable in User class
         otherwise application may be crashed as User.user_token == null
         or there is no user_token saved needed to download all data

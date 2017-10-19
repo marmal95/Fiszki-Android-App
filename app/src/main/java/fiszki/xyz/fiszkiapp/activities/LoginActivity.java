@@ -21,6 +21,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.source.AppPreferences;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
 
@@ -170,14 +171,6 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
      */
     @Override
     public void processFinish(HashMap<String, String> result) {
-        /*
-        Check result from server to know if logging was successful
-        Server answer: output
-            0 - data was incorrect
-            -1 - account has not been activated yey
-            "" - no data -> so could not connect
-            token - user token - logging was successful
-         */
         String output = result.get(Constants.RESULT);
         progressBar.setVisibility(View.GONE);
 
@@ -199,12 +192,8 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
                 break;
 
             default:
-                // Save token to shared preferences if user wants to stay logged in
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("user_data", 0);
-                SharedPreferences.Editor edit = pref.edit();
-
-                edit.putString("user_token", output);
-                edit.apply();
+                AppPreferences appPreferences = AppPreferences.getInstance(getApplicationContext());
+                appPreferences.put(AppPreferences.Key.USER_TOKEN, output);
 
                 Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
