@@ -56,7 +56,7 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
 
         if(userEmail.equals("") || userName.equals(""))
             Toast.makeText(RestorePasswordActivity.this, getString(R.string.fillEmailAndPassword), Toast.LENGTH_LONG).show();
-        else if(!Constants.validateEmail(userEmail))
+        else if(!Functions.validateEmail(userEmail))
             Toast.makeText(RestorePasswordActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
         else{
             if(!Functions.isOnline(getApplicationContext()))

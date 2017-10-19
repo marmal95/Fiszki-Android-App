@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
 
         if(userEmail.equals("") || userName.equals("") || userPassw.equals(""))
             Toast.makeText(RegisterActivity.this, getString(R.string.fillAllAreas), Toast.LENGTH_LONG).show();
-        else if(!Constants.validateEmail(userEmail))
+        else if(!Functions.validateEmail(userEmail))
             Toast.makeText(RegisterActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
         else{
             if(!Functions.isOnline(getApplicationContext()))

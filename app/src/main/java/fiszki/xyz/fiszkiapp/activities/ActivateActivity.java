@@ -65,7 +65,7 @@ public class ActivateActivity extends AppCompatActivity implements AsyncResponse
 
         if(userEmail.equals("") || userCode.equals(""))
             Toast.makeText(ActivateActivity.this, getString(R.string.fillEmailAndCode), Toast.LENGTH_LONG).show();
-        else if(!Constants.validateEmail(userEmail))
+        else if(!Functions.validateEmail(userEmail))
             Toast.makeText(ActivateActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
         else {
             if(!Functions.isOnline(getApplicationContext()))
