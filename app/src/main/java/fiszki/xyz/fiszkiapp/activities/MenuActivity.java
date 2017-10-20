@@ -1,11 +1,7 @@
 package fiszki.xyz.fiszkiapp.activities;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -169,7 +165,7 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
      * Removes the token from SharedPreferences.
      */
     private void logout() {
-        User.getInstance(this).clear_data(this);
+        User.getInstance(this).clearUserData(this);
 
         Toast.makeText(this, getString(R.string.userLogout), Toast.LENGTH_LONG).show();
 
@@ -243,7 +239,7 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
             appPreferences.put(AppPreferences.Key.USER_TIME_CREATED, c.getString("time_created"));
             appPreferences.put(AppPreferences.Key.USER_LAST_ACTIVITY, c.getString("last_list_activity"));
 
-            User.getInstance(this).get_data(this);
+            User.getInstance(this).initUserData(this);
 
         } catch (JSONException e) {
             logout();

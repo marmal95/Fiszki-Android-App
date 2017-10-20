@@ -1,9 +1,6 @@
 package fiszki.xyz.fiszkiapp.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -487,7 +484,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
     }
 
     private void logout() {
-        User.getInstance(this).clear_data(this);
+        User.getInstance(this).clearUserData(this);
 
         Toast.makeText(this, getString(R.string.userLogout), Toast.LENGTH_LONG).show();
 

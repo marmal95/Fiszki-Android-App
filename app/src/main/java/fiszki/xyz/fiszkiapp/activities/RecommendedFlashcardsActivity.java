@@ -507,7 +507,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
     }
 
     private void logout() {
-        User.getInstance(this).clear_data(this);
+        User.getInstance(this).clearUserData(this);
 
         Toast.makeText(this, getString(R.string.userLogout), Toast.LENGTH_LONG).show();
 

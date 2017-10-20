@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
+// TODO: Test
 public class AppPreferences {
 
     private static final String SETTINGS_NAME = "default_settings";

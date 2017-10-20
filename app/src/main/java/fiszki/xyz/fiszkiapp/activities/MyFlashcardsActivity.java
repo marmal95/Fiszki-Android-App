@@ -1,12 +1,9 @@
 package fiszki.xyz.fiszkiapp.activities;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -636,7 +633,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
     }
 
     private void logout() {
-        User.getInstance(this).clear_data(this);
+        User.getInstance(this).clearUserData(this);
 
         Toast.makeText(this, getString(R.string.userLogout), Toast.LENGTH_LONG).show();
 

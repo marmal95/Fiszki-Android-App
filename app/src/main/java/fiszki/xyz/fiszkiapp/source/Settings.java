@@ -1,5 +1,7 @@
 package fiszki.xyz.fiszkiapp.source;
 
+
+// TODO: Refactor
 public class Settings {
 
     private boolean displayInSequence;

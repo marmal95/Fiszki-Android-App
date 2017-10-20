@@ -21,16 +21,16 @@ public class Flashcard implements Parcelable {
     private String rate;
 
     public Flashcard(){
-        this.id = "";
-        this.langFrom = "";
-        this.langTo = "";
-        this.name = "";
-        this.hash = "";
-        this.timeCreated = "";
-        this.timeEdit = "";
-        this.version = "";
-        this.status = "";
-        this.rate = "";
+        this.id = null;
+        this.langFrom = null;
+        this.langTo = null;
+        this.name = null;
+        this.hash = null;
+        this.timeCreated = null;
+        this.timeEdit = null;
+        this.version = null;
+        this.status = null;
+        this.rate = null;
     }
 
     private Flashcard(Parcel in) {

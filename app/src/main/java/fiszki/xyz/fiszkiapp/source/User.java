@@ -2,6 +2,7 @@ package fiszki.xyz.fiszkiapp.source;
 
 import android.content.Context;
 
+// TODO: Test User
 public class User {
 
     private static User mInstance = null;
@@ -16,7 +17,7 @@ public class User {
     private String userToken = null;
 
     private User(Context context){
-        get_data(context);
+        initUserData(context);
     }
 
     public static User getInstance(Context context){
@@ -57,7 +58,7 @@ public class User {
         return userToken;
     }
 
-    public void get_data(Context context) {
+    public void initUserData(Context context) {
         AppPreferences appPreferences = AppPreferences.getInstance(context);
         name = appPreferences.getString(AppPreferences.Key.USER_NAME);
         userId = appPreferences.getString(AppPreferences.Key.USER_ID);
@@ -69,7 +70,7 @@ public class User {
         userToken = appPreferences.getString(AppPreferences.Key.USER_TOKEN);
     }
 
-    public void clear_data(Context context) {
+    public void clearUserData(Context context) {
         clear();
 
         AppPreferences appPreferences = AppPreferences.getInstance(context);
