@@ -1,15 +1,11 @@
 package fiszki.xyz.fiszkiapp.activities;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +33,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.source.Functions;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.utils.Pair;

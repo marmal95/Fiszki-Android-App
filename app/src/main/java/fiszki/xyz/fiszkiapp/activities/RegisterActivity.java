@@ -1,9 +1,6 @@
 package fiszki.xyz.fiszkiapp.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,9 +17,10 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.source.Functions;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.utils.IntentKey;
 
 /**
  * RegisterActivity registers new users.
@@ -141,7 +139,7 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
             case "2":
                 Toast.makeText(RegisterActivity.this, getResources().getString(R.string.accountCreated), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(RegisterActivity.this, ActivateActivity.class);
-                intent.putExtra("email", this.userEmailArea.getText().toString());
+                intent.putExtra(IntentKey.EMAIL.name(), this.userEmailArea.getText().toString());
                 startActivity(intent);
                 break;
 

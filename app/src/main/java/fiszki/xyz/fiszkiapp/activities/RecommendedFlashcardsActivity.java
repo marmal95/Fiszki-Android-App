@@ -37,7 +37,7 @@ import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
-import fiszki.xyz.fiszkiapp.source.Functions;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.source.User;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 

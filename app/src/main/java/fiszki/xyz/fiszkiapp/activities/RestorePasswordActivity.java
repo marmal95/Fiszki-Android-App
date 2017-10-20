@@ -1,8 +1,5 @@
 package fiszki.xyz.fiszkiapp.activities;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +16,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.source.Functions;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
 

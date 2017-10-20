@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.source.Functions;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;

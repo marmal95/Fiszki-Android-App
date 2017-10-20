@@ -27,7 +27,7 @@ import java.util.HashMap;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.source.AppPreferences;
-import fiszki.xyz.fiszkiapp.source.Functions;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.source.User;

@@ -1,4 +1,4 @@
-package fiszki.xyz.fiszkiapp.source;
+package fiszki.xyz.fiszkiapp.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
