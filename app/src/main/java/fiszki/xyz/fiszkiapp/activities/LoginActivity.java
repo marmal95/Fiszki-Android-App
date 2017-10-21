@@ -17,8 +17,8 @@ import java.util.HashMap;
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
-import fiszki.xyz.fiszkiapp.source.AppPreferences;
 import fiszki.xyz.fiszkiapp.source.RequestBuilder;
+import fiszki.xyz.fiszkiapp.source.User;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.IntentKey;
@@ -37,9 +37,9 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
         if (!Functions.isOnline(getApplicationContext()))
             Functions.showToast(LoginActivity.this, getString(R.string.noConnectionWarning));
 
-        this.userEmailArea = (EditText) findViewById(R.id.emailArea);
-        this.userPasswordArea = (EditText) findViewById(R.id.passwordArea);
-        this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        this.userEmailArea = findViewById(R.id.emailArea);
+        this.userPasswordArea = findViewById(R.id.passwordArea);
+        this.progressBar = findViewById(R.id.progressBar);
 
         if (getIntent().getStringExtra(IntentKey.EMAIL.name()) != null) {
             this.userEmailArea.setText(getIntent().getStringExtra(IntentKey.EMAIL.name()));
@@ -123,8 +123,7 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
     }
 
     private void handleSuccessLogon(String userToken) {
-        AppPreferences appPreferences = AppPreferences.getInstance(getApplicationContext());
-        appPreferences.put(AppPreferences.Key.USER_TOKEN, userToken);
+        User.getInstance(getApplicationContext()).setUserToken(userToken);
 
         Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

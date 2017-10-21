@@ -58,7 +58,14 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
          */
         String user_token = User.getInstance(this).getUserToken();
         if(user_token == null)
-            logout();
+        {
+            // TODO: Old preferences - remove after some time
+            String oldToken = getSharedPreferences("user_data", 0).getString("user_token", null);
+            if(oldToken == null)
+                logout();
+            else
+                getUserInfo(oldToken);
+        }
         else
             this.getUserInfo(user_token);
     }
@@ -221,25 +228,19 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
      */
     @Override
     public void processFinish(HashMap<String, String> result) {
-
-        Log.d("USER_INFO", result.get(Constants.RESULT));
-
         String output;
         output = result.get(Constants.RESULT);
 
         try {
             JSONObject c = new JSONObject(output);
-
-            AppPreferences appPreferences = AppPreferences.getInstance(getApplicationContext());
-            appPreferences.put(AppPreferences.Key.USER_NAME, c.getString("name"));
-            appPreferences.put(AppPreferences.Key.USER_ID, c.getString("user_id"));
-            appPreferences.put(AppPreferences.Key.USER_EMAIL, c.getString("email"));
-            appPreferences.put(AppPreferences.Key.USER_FULLNAME, c.getString("full_name"));
-            appPreferences.put(AppPreferences.Key.USER_PERMISSION, c.getString("permission"));
-            appPreferences.put(AppPreferences.Key.USER_TIME_CREATED, c.getString("time_created"));
-            appPreferences.put(AppPreferences.Key.USER_LAST_ACTIVITY, c.getString("last_list_activity"));
-
-            User.getInstance(this).initUserData(this);
+            User user = User.getInstance(getApplicationContext());
+            user.setName(c.getString("name"));
+            user.setUserId(c.getString("user_id"));
+            user.setEmail(c.getString("email"));
+            user.setFullName(c.getString("full_name"));
+            user.setPermission(c.getString("permission"));
+            user.setTimeCreated(c.getString("time_created"));
+            user.setLastActivity(c.getString("last_list_activity"));
 
         } catch (JSONException e) {
             logout();

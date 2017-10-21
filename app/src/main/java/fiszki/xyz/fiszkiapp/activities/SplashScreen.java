@@ -6,14 +6,16 @@ import android.support.v7.app.AppCompatActivity;
 
 import fiszki.xyz.fiszkiapp.activities.LoginActivity;
 import fiszki.xyz.fiszkiapp.activities.MenuActivity;
+import fiszki.xyz.fiszkiapp.source.User;
 
 
-public class SlashScreen extends AppCompatActivity {
+public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getSharedPreferences("user_data", 0).getString("user_token", "0").equals("0")) {
+        User user = User.getInstance(getApplicationContext());
+        if(user.getUserToken() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
