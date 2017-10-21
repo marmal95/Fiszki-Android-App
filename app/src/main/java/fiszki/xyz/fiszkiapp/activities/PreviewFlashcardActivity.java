@@ -64,9 +64,9 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
 
         setTitle(getString(R.string.flashcardPreview));
 
-        this.mListView = (ListView)findViewById(R.id.listView);
-        this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        this.fab = (FloatingActionButton)findViewById(R.id.fab);
+        this.mListView = findViewById(R.id.listView);
+        this.progressBar = findViewById(R.id.progressBar);
+        this.fab = findViewById(R.id.fab);
 
         this.mWords = new ArrayList<>();
         this.mAdapter = new WordsAdapter(this, this.mWords);
@@ -224,7 +224,7 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         if(hash != null)
             mRequest += "&hash=" + hash;
 
-        final ConnectionTask mConn = new ConnectionTask(this, Constants.MANAGE_LIST);
+        final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.MANAGE_FLASHCARD);
         mConn.execute(getString(R.string.manageListPhp), mRequest);
 
         progressBar.setVisibility(View.VISIBLE);
@@ -304,7 +304,7 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
             String mRequest = "hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.GET_FLASHCARD_CONTENT);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.GET_FLASHCARD_CONTENT);
             mConn.execute(getString(R.string.getListContentByHashPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -327,12 +327,12 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_edit_name);
 
-        final EditText cardName = (EditText)dialog.findViewById(R.id.name);
+        final EditText cardName = dialog.findViewById(R.id.name);
         cardName.setText(flashcard.getName());
 
-        TextView dialogHeader = (TextView)dialog.findViewById(R.id.dialogHeader);
-        Button okButton = (Button)dialog.findViewById(R.id.okButton);
-        Button canButton = (Button)dialog.findViewById(R.id.cancelButton);
+        TextView dialogHeader = dialog.findViewById(R.id.dialogHeader);
+        Button okButton = dialog.findViewById(R.id.okButton);
+        Button canButton = dialog.findViewById(R.id.cancelButton);
 
         dialogHeader.setText(getString(R.string.flashcardName));
 
@@ -390,11 +390,11 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_word);
 
-        TextView dialogHeader = (TextView) dialog.findViewById(R.id.dialogHeader);
-        final EditText word = (EditText) dialog.findViewById(R.id.wordToTranslate);
-        final EditText trans = (EditText) dialog.findViewById(R.id.wordTranslation);
-        Button okButton = (Button)dialog.findViewById(R.id.okButton);
-        Button canButton = (Button)dialog.findViewById(R.id.cancelButton);
+        TextView dialogHeader = dialog.findViewById(R.id.dialogHeader);
+        final EditText word = dialog.findViewById(R.id.wordToTranslate);
+        final EditText trans = dialog.findViewById(R.id.wordTranslation);
+        Button okButton = dialog.findViewById(R.id.okButton);
+        Button canButton = dialog.findViewById(R.id.cancelButton);
 
         dialogHeader.setText(getString(R.string.addWord));
 
@@ -433,15 +433,15 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_word);
 
-        TextView dialogHeader = (TextView) dialog.findViewById(R.id.dialogHeader);
-        final EditText word = (EditText) dialog.findViewById(R.id.wordToTranslate);
-        final EditText trans = (EditText) dialog.findViewById(R.id.wordTranslation);
+        TextView dialogHeader = dialog.findViewById(R.id.dialogHeader);
+        final EditText word = dialog.findViewById(R.id.wordToTranslate);
+        final EditText trans = dialog.findViewById(R.id.wordTranslation);
 
         word.setText(temp.getLeftValue());
         trans.setText(temp.getRightValue());
 
-        Button okButton = (Button)dialog.findViewById(R.id.okButton);
-        Button canButton = (Button)dialog.findViewById(R.id.cancelButton);
+        Button okButton = dialog.findViewById(R.id.okButton);
+        Button canButton = dialog.findViewById(R.id.cancelButton);
 
         dialogHeader.setText(getString(R.string.addWord));
 
@@ -470,20 +470,19 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
     }
 
     @Override
-    public void processFinish(HashMap<String, String> result) {
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
+        ConnectionTask.Mode requestMode = ConnectionTask.Mode.valueOf(result.get(ConnectionTask.Key.REQUEST_MODE));
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
 
-        switch(result.get(Constants.MODE)){
-            case Constants.GET_FLASHCARD_CONTENT:
-                this.getFlashcardContent_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.MANAGE_LIST:
-                try {
-                    JSONObject jsonObject = new JSONObject(result.get(Constants.RESULT));
-                    this.manageListCallback(jsonObject.getInt("status"));
-                    break;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        if(requestMode == ConnectionTask.Mode.GET_FLASHCARD_CONTENT)
+            this.getFlashcardContent_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.MANAGE_FLASHCARD){
+            try {
+                JSONObject jsonObject = new JSONObject(requestResponse);
+                this.manageListCallback(jsonObject.getInt("status"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         this.mAdapter.notifyDataSetChanged();

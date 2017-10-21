@@ -1,10 +1,9 @@
 package fiszki.xyz.fiszkiapp.activities;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -14,20 +13,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
-import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
-import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.utils.Functions;
-import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 
-/*
-RestorePasswordActivity class allows user
-to restore their password in case
-they forget it.
-
-Implements AsyncResponse to get callback
-from ConnectionTask with the server result.
-*/
 public class RestorePasswordActivity extends AppCompatActivity implements AsyncResponse {
 
     // GUI Components
@@ -41,9 +31,9 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
         setContentView(R.layout.activity_restore_password);
 
         // Initialize GUI components
-        this.userEmailArea = (EditText) findViewById(R.id.emailArea);
-        this.userNameArea = (EditText) findViewById(R.id.nameArea);
-        this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        this.userEmailArea = findViewById(R.id.emailArea);
+        this.userNameArea = findViewById(R.id.nameArea);
+        this.progressBar = findViewById(R.id.progressBar);
     }
 
     public void restoreButton_onClick(View view) {
@@ -72,7 +62,7 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
                 String mRequest = "email=" + userEmail + "&name=" + userName;
 
                 // Create and run ConnectionTask
-                final ConnectionTask mConn = new ConnectionTask(this, Constants.RESTORE_PASS_TASK);
+                final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.RESTORE_PASSWORD);
                 mConn.execute(getString(R.string.forgotPasswordPhp), mRequest);
 
                 progressBar.setVisibility(View.VISIBLE);
@@ -98,24 +88,12 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
     }
 
     @Override
-    public void processFinish(HashMap<String, String> result) {
-        /*
-        Check result from server to know if logging was successful
-        Server answer: output
-            0 - Error while sending email
-            1 - New password sent to email
-            2 - Incorrect data format
-            3 - Such a user does not exist
-            4 - Incorrect name or e-mail
-            5 - UNKNOWN Error
-         */
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
 
-        String output = result.get(Constants.RESULT);
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
         progressBar.setVisibility(View.GONE);
 
-        Log.d("REST_PASS_RESULT", output);
-
-        switch(output){
+        switch(requestResponse){
             case "0":
                 Toast.makeText(RestorePasswordActivity.this, getResources().
                         getString(R.string.emailSendError), Toast.LENGTH_LONG).show();

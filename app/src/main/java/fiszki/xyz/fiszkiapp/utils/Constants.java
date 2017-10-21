@@ -6,33 +6,33 @@ import java.util.regex.Pattern;
 
 public class Constants {
 
-    public static final String FIRST_COLUMN = "FIRST";
-    public static final String SECOND_COLUMN = "SECOND";
+//    public static final String FIRST_COLUMN = "FIRST";
+//    public static final String SECOND_COLUMN = "SECOND";
 
-    public static final String MODE = "MODE";
-    public static final String RESULT = "RESULT";
+//    public static final String MODE = "MODE";
+//    public static final String RESULT = "RESULT";
 
-    public static final String LOGIN_TASK = "LOGIN_TASK";
-    public static final String REGISTER_TASK = "REGISTER_TASK";
-    public static final String ACTIVATE_ACC_TASK = "ACTIVATE_ACC_TASK";
-    public static final String RESTORE_PASS_TASK = "REST_PASS_TASK";
-    public static final String GET_FAVOUR_TASK = "GET_FAV_TASK";
-    public static final String GET_MINE_TASK = "GET_M_TASK";
-    public static final String GET_RECOM_TASK = "GET_REC_TASK";
-    public static final String LIKE_TASK = "LIKE_TASK";
-    public static final String GET_FLASHCARD_CONTENT = "GET_FLSH_CNTN";
-    public static final String UNLIKE_TASK = "UNLIKE_TASK";
-    public static final String REMOVE_FLASHCARD = "REM_CARD";
-    public static final String GET_USER_INFO = "GET_USER_INFO";
-    public static final String EDIT_LIST = "EDIT_LIST";
-    public static final String ADD_LIST = "ADD_LIST";
-    public static final String MANAGE_LIST = "MANAGE_LIST";
-    public static final String DOWNLOAD_LIST = "DOWN_LIST";
-    public static final String SEARCH_BY_NAME = "SEARCH_BY_NAME";
-    public static final String SEARCH_BY_HASH = "SEARCH_BY_HASH";
-    public static final String DELETE_ACCOUNT = "DEL_ACC";
-    public static final String CHANGE_USR_NAME = "CHANGE_USR_NAME";
-    public static final String CHANGE_USR_PASS = "CHANGE_USR_PASS";
+//    public static final String LOGIN_TASK = "LOGIN_TASK";
+//    public static final String REGISTER_TASK = "REGISTER_TASK";
+//    public static final String ACTIVATE_ACC_TASK = "ACTIVATE_ACC_TASK";
+//    public static final String RESTORE_PASS_TASK = "REST_PASS_TASK";
+//    public static final String GET_FAVOUR_TASK = "GET_FAV_TASK";
+//    public static final String GET_MINE_TASK = "GET_M_TASK";
+//    public static final String GET_RECOM_TASK = "GET_REC_TASK";
+//    public static final String LIKE_TASK = "LIKE_TASK";
+//    public static final String GET_FLASHCARD_CONTENT = "GET_FLSH_CNTN";
+//    public static final String UNLIKE_TASK = "UNLIKE_TASK";
+//    public static final String REMOVE_FLASHCARD = "REM_CARD";
+//    public static final String GET_USER_INFO = "GET_USER_INFO";
+//    public static final String EDIT_LIST = "EDIT_LIST";
+//    public static final String ADD_LIST = "ADD_LIST";
+//    public static final String MANAGE_LIST = "MANAGE_LIST";
+//    public static final String DOWNLOAD_LIST = "DOWN_LIST";
+//    public static final String SEARCH_BY_NAME = "SEARCH_BY_NAME";
+//    public static final String SEARCH_BY_HASH = "SEARCH_BY_HASH";
+//    public static final String DELETE_ACCOUNT = "DEL_ACC";
+//    public static final String CHANGE_USR_NAME = "CHANGE_USR_NAME";
+//    public static final String CHANGE_USR_PASS = "CHANGE_USR_PASS";
 
 
     public static final String LIST = "LIST";

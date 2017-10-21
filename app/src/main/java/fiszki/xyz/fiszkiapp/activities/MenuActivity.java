@@ -3,10 +3,9 @@ package fiszki.xyz.fiszkiapp.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,13 +23,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
-import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
-import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.source.AppPreferences;
-import fiszki.xyz.fiszkiapp.utils.Functions;
-import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.source.User;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 
 public class MenuActivity extends AppCompatActivity implements AsyncResponse {
 
@@ -48,7 +45,7 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
 
         setTitle(getString(R.string.fiszkiMenu));
 
-        this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        this.progressBar = findViewById(R.id.progressBar);
 
         /*
         If user has previous version of application he need to be logout
@@ -118,7 +115,7 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
             String mRequest = "token=" + token;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.GET_USER_INFO);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.GET_USER_INFO);
             mConn.execute(getString(R.string.userInfoByToken), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -186,14 +183,14 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_report_bug);
 
-        TextView header = (TextView)dialog.findViewById(R.id.dialogHeader);
+        TextView header = dialog.findViewById(R.id.dialogHeader);
         header.setText(getString(R.string.reportBug));
 
-        final EditText topic = (EditText)dialog.findViewById(R.id.messageSubject);
-        final EditText message = (EditText)dialog.findViewById(R.id.messageContent);
+        final EditText topic = dialog.findViewById(R.id.messageSubject);
+        final EditText message = dialog.findViewById(R.id.messageContent);
 
-        Button sendButton = (Button)dialog.findViewById(R.id.okButton);
-        Button cancelButton = (Button)dialog.findViewById(R.id.cancelButton);
+        Button sendButton = dialog.findViewById(R.id.okButton);
+        Button cancelButton = dialog.findViewById(R.id.cancelButton);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,12 +224,11 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
      * @param result
      */
     @Override
-    public void processFinish(HashMap<String, String> result) {
-        String output;
-        output = result.get(Constants.RESULT);
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
 
         try {
-            JSONObject c = new JSONObject(output);
+            JSONObject c = new JSONObject(requestResponse);
             User user = User.getInstance(getApplicationContext());
             user.setName(c.getString("name"));
             user.setUserId(c.getString("user_id"));

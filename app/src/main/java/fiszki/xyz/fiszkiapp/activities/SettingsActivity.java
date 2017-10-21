@@ -135,26 +135,26 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
 
     private void initializeGUI() {
         // Initialize GUI components
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
-        displayInSequence = (Switch) findViewById(R.id.displayInSequence);
-        displayRevSequence = (Switch) findViewById(R.id.displayRevSequence);
-        displayRandomly = (Switch) findViewById(R.id.displayRandomly);
+        displayInSequence = findViewById(R.id.displayInSequence);
+        displayRevSequence = findViewById(R.id.displayRevSequence);
+        displayRandomly = findViewById(R.id.displayRandomly);
 
-        repeatNotKnown = (Switch) findViewById(R.id.repeatNotKnown);
-        reverseLanguages = (Switch) findViewById(R.id.reverseLanguages);
-        createRevList = (Switch) findViewById(R.id.createRevisionList);
+        repeatNotKnown = findViewById(R.id.repeatNotKnown);
+        reverseLanguages = findViewById(R.id.reverseLanguages);
+        createRevList = findViewById(R.id.createRevisionList);
 
-        decisionMode = (Switch) findViewById(R.id.decisionMode);
-        writeMode = (Switch) findViewById(R.id.writeMode);
+        decisionMode = findViewById(R.id.decisionMode);
+        writeMode = findViewById(R.id.writeMode);
 
-        ttsEnabled = (Switch) findViewById(R.id.ttsEnabled);
-        ttsSpeed = (SeekBar) findViewById(R.id.ttsSpeed);
-        skipBrackets = (Switch) findViewById(R.id.skipBrackets);
-        autoReadWords = (Switch)findViewById(R.id.autoReadWords);
-        autoReadTrans = (Switch) findViewById(R.id.autoReadTrans);
+        ttsEnabled = findViewById(R.id.ttsEnabled);
+        ttsSpeed = findViewById(R.id.ttsSpeed);
+        skipBrackets = findViewById(R.id.skipBrackets);
+        autoReadWords = findViewById(R.id.autoReadWords);
+        autoReadTrans = findViewById(R.id.autoReadTrans);
 
-        fontSize = (SeekBar)findViewById(R.id.fontSizeBar);
+        fontSize = findViewById(R.id.fontSizeBar);
     }
 
     private void loadSettings() {
@@ -318,12 +318,12 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_password_input);
 
-        TextView header = (TextView) dialog.findViewById(R.id.dialogHeader);
+        TextView header = dialog.findViewById(R.id.dialogHeader);
         header.setText(getString(R.string.deleteAccount));
 
-        final EditText password = (EditText) dialog.findViewById(R.id.name);
-        Button okButton = (Button) dialog.findViewById(R.id.okButton);
-        Button canButton = (Button) dialog.findViewById(R.id.cancelButton);
+        final EditText password = dialog.findViewById(R.id.name);
+        Button okButton = dialog.findViewById(R.id.okButton);
+        Button canButton = dialog.findViewById(R.id.cancelButton);
 
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,7 +362,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
             String mRequest = "token=" + userToken + "&fullName=" + userName;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.CHANGE_USR_NAME);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.CHANGE_USER_NAME);
             mConn.execute(getString(R.string.changeFullNamePhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -422,7 +422,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
                 String mRequest = "token=" + userToken + "&email=" + userEmail +  "&password=" + userPassw;
 
                 // Create and run ConnectionTask
-                final ConnectionTask mConn = new ConnectionTask(this, Constants.DELETE_ACCOUNT);
+                final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.DELETE_ACCOUNT);
                 mConn.execute(getString(R.string.deleteAccountPhp), mRequest);
 
                 progressBar.setVisibility(View.VISIBLE);
@@ -460,18 +460,16 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
     }
 
     @Override
-    public void processFinish(HashMap<String, String> output) {
-        switch (output.get(Constants.MODE)) {
-            case Constants.DELETE_ACCOUNT:
-                deleteAccount_callback(output.get(Constants.RESULT));
-                break;
-            case Constants.CHANGE_USR_NAME:
-                changeName_callback(output.get(Constants.RESULT));
-                break;
-            case Constants.CHANGE_USR_PASS:
-                changePassword_callback(output.get(Constants.RESULT));
-                        break;
-        }
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> output) {
+        ConnectionTask.Mode requestMode = ConnectionTask.Mode.valueOf(output.get(ConnectionTask.Key.REQUEST_MODE));
+        String requestResponse = output.get(ConnectionTask.Key.REQUEST_RESPONSE);
+
+        if(requestMode == ConnectionTask.Mode.DELETE_ACCOUNT)
+            deleteAccount_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.CHANGE_USER_NAME)
+            changeName_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.CHANGE_USER_PASSWORD)
+            changePassword_callback(requestResponse);
 
         progressBar.setVisibility(View.GONE);
     }
@@ -480,12 +478,12 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_edit_name);
 
-        TextView header = (TextView) dialog.findViewById(R.id.dialogHeader);
+        TextView header = dialog.findViewById(R.id.dialogHeader);
         header.setText(getString(R.string.changeUsername));
 
-        final EditText name = (EditText) dialog.findViewById(R.id.name);
-        Button okButton = (Button) dialog.findViewById(R.id.okButton);
-        Button canButton = (Button) dialog.findViewById(R.id.cancelButton);
+        final EditText name = dialog.findViewById(R.id.name);
+        Button okButton = dialog.findViewById(R.id.okButton);
+        Button canButton = dialog.findViewById(R.id.cancelButton);
 
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -509,14 +507,14 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_change_password);
 
-        TextView header = (TextView) dialog.findViewById(R.id.dialogHeader);
+        TextView header = dialog.findViewById(R.id.dialogHeader);
         header.setText(getString(R.string.changeUsername));
 
-        final EditText oldPass = (EditText) dialog.findViewById(R.id.oldPass);
-        final EditText newPass = (EditText) dialog.findViewById(R.id.newPass);
-        final EditText repNewPass = (EditText) dialog.findViewById(R.id.repNewPass);
-        Button okButton = (Button) dialog.findViewById(R.id.okButton);
-        Button canButton = (Button) dialog.findViewById(R.id.cancelButton);
+        final EditText oldPass = dialog.findViewById(R.id.oldPass);
+        final EditText newPass = dialog.findViewById(R.id.newPass);
+        final EditText repNewPass = dialog.findViewById(R.id.repNewPass);
+        Button okButton = dialog.findViewById(R.id.okButton);
+        Button canButton = dialog.findViewById(R.id.cancelButton);
 
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -561,7 +559,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
                     userToken + "&email=" + userEmail;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.CHANGE_USR_PASS);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.CHANGE_USER_PASSWORD);
             mConn.execute(getString(R.string.changePasswordPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);

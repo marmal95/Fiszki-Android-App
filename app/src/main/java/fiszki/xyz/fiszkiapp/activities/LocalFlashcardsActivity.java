@@ -46,9 +46,9 @@ public class LocalFlashcardsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_local_flashcards);
 
         // Initialize GUI Components
-        this.mListView = (ListView)findViewById(R.id.listView);
-        this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        this.swiperefresh = (SwipeRefreshLayout)findViewById(R.id.swiperefresh);
+        this.mListView = findViewById(R.id.listView);
+        this.progressBar = findViewById(R.id.progressBar);
+        this.swiperefresh = findViewById(R.id.swiperefresh);
 
         // Initialize Objects
         this.flashcards = new ArrayList<>();

@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -15,11 +14,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
-import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
-import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.utils.Functions;
-import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.IntentKey;
 
 /**
@@ -44,10 +42,10 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
         setContentView(R.layout.activity_register);
 
         // Initialize GUI Components
-        this.userEmailArea = (EditText)findViewById(R.id.emailArea);
-        this.userNameArea = (EditText)findViewById(R.id.nameArea);
-        this.userPasswArea = (EditText)findViewById(R.id.passwordArea);
-        this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        this.userEmailArea = findViewById(R.id.emailArea);
+        this.userNameArea = findViewById(R.id.nameArea);
+        this.userPasswArea = findViewById(R.id.passwordArea);
+        this.progressBar = findViewById(R.id.progressBar);
     }
 
     /**
@@ -84,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
                 String mRequest = "email=" + userEmail + "&name=" + userName + "&password=" + userPassw;
 
                 // Create and run ConnectionTask
-                final ConnectionTask mConn = new ConnectionTask(this, Constants.REGISTER_TASK);
+                final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.REGISTER_ACCOUNT);
                 mConn.execute(getString(R.string.registerPhp), mRequest);
 
                 progressBar.setVisibility(View.VISIBLE);
@@ -120,22 +118,11 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
      * @param result
      */
     @Override
-    public void processFinish(HashMap<String, String> result) {
-        /*
-        Check result from server to know if register was successful
-        Server answer: output
-            0 - ???? TODO
-            1 - ???? TODO
-            2 - account has been created
-         */
-
-        String output = result.get(Constants.RESULT);
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
+        String responseRequest = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
         progressBar.setVisibility(View.GONE);
 
-        Log.d("REGISTER_RESULT", output);
-
-        switch(output){
-
+        switch(responseRequest){
             case "2":
                 Toast.makeText(RegisterActivity.this, getResources().getString(R.string.accountCreated), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(RegisterActivity.this, ActivateActivity.class);
@@ -143,7 +130,6 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
                 startActivity(intent);
                 break;
 
-            // TODO: KIEDY KTORE ECHO 1 KTORE ECHO 2
             case "1":
                 Toast.makeText(RegisterActivity.this, getResources().getString(R.string.errorOccurred), Toast.LENGTH_LONG).show();
                 break;

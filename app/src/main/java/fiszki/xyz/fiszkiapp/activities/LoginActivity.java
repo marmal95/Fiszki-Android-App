@@ -19,7 +19,6 @@ import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.source.RequestBuilder;
 import fiszki.xyz.fiszkiapp.source.User;
-import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.IntentKey;
 
@@ -67,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
                 String request = requestBuilder.buildRequest();
                 progressBar.setVisibility(View.VISIBLE);
 
-                final ConnectionTask connection = new ConnectionTask(this, Constants.LOGIN_TASK);
+                final ConnectionTask connection = new ConnectionTask(this, ConnectionTask.Mode.LOGIN);
                 connection.execute(getString(R.string.getTokenPhp), request);
                 createCancelConnectionHandler(connection);
             }
@@ -90,13 +89,13 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
     }
 
     @Override
-    public void processFinish(HashMap<String, String> result) {
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
         progressBar.setVisibility(View.GONE);
 
         int responseCode = ResponseCode.INIT_CODE;
         String userToken = null;
         try {
-            JSONObject c = new JSONObject(result.get(Constants.RESULT));
+            JSONObject c = new JSONObject(result.get(ConnectionTask.Key.REQUEST_RESPONSE));
             responseCode = c.getInt("status");
             userToken = c.optString("token", null);
         } catch (JSONException e) {

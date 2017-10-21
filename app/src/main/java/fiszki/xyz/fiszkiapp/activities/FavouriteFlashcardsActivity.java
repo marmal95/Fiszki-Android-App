@@ -68,9 +68,9 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
         this.mFlashcards = new ArrayList<>();
 
         // Initialize GUI Components
-        this.mListView = (ListView)findViewById(R.id.listView);
-        this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        this.swiperefresh = (SwipeRefreshLayout)findViewById(R.id.swiperefresh);
+        this.mListView = findViewById(R.id.listView);
+        this.progressBar = findViewById(R.id.progressBar);
+        this.swiperefresh = findViewById(R.id.swiperefresh);
 
         this.mAdapter = new FlashcardsAdapter(this, R.layout.list_view_item_my_flashcard, this.mFlashcards);
         this.mListView.setAdapter(this.mAdapter);
@@ -196,7 +196,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
             Log.d("REQUEST_SEND", mRequest);
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.GET_FAVOUR_TASK);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.GET_FAVOURITE_FLASHCARDS);
             mConn.execute(getString(R.string.listsByTokenPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -238,7 +238,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
             String mRequest = "token=" + userToken + "&hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.UNLIKE_TASK);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.UNLIKE_FLASHCARD);
             mConn.execute(getString(R.string.unlikeListPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -316,22 +316,18 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
      * @param result
      */
     @Override
-    public void processFinish(HashMap<String, String> result) {
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
+        ConnectionTask.Mode requestMode = ConnectionTask.Mode.valueOf(result.get(ConnectionTask.Key.REQUEST_MODE));
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
 
-        switch(result.get(Constants.MODE)){
-            case Constants.GET_FAVOUR_TASK:
-                this.getFavouriteFlashcards_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.UNLIKE_TASK:
-                this.unlikeFlashcard_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.DOWNLOAD_LIST:
-                this.downloadFlashcard_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.REMOVE_FLASHCARD:
-                this.removeFlashcard_callback(result.get(Constants.RESULT));
-                break;
-        }
+        if(requestMode == ConnectionTask.Mode.GET_FAVOURITE_FLASHCARDS)
+            this.getFavouriteFlashcards_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.UNLIKE_FLASHCARD)
+            this.unlikeFlashcard_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.DOWNLOAD_FLASHCARD)
+            this.downloadFlashcard_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.REMOVE_FLASHCARD)
+            this.removeFlashcard_callback(requestResponse);
 
         this.mAdapter.notifyDataSetChanged();
         this.progressBar.setVisibility(View.GONE);
@@ -359,7 +355,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
             String mRequest = "hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.DOWNLOAD_LIST);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.DOWNLOAD_FLASHCARD);
             mConn.execute(getString(R.string.getListContentByHashPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -439,7 +435,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
             String mRequest = "token=" + userToken + "&hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.REMOVE_FLASHCARD);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.REMOVE_FLASHCARD);
             mConn.execute(getString(R.string.deleteListPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);

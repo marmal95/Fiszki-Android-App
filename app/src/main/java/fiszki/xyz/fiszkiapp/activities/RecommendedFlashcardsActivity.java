@@ -41,13 +41,6 @@ import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.source.User;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 
-/*
-TODO: THIS CODE CAN BE SHORTER
-TODO: BY MOVING ALL REDUNDANT
-TODO: CALLS IN FUNCTION TASKS
-TODO: TO ONE SEPARATE FUNCTION
- */
-
 public class RecommendedFlashcardsActivity extends AppCompatActivity implements AsyncResponse {
 
     // GUI Components
@@ -69,15 +62,15 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
         setTitle(getString(R.string.recommendedFiszki));
 
         // Load Ad
-        adView = (AdView)findViewById(R.id.adView);
+        adView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
 
         // Initialize GUI Components
-        this.mListView = (ListView)findViewById(R.id.listView);
-        this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        this.spinner = (Spinner)findViewById(R.id.spinner);
+        this.mListView = findViewById(R.id.listView);
+        this.progressBar = findViewById(R.id.progressBar);
+        this.spinner = findViewById(R.id.spinner);
 
         // Initialize Objects & Variables
         this.mFlashcards = new ArrayList<>();
@@ -237,7 +230,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
             String mRequest = "token=" + userToken + "&name=" + "best of " + lang + "&lang=" + lang;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.GET_RECOM_TASK);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.GET_RECOMMENDED_FLASHCARDS);
             mConn.execute(getString(R.string.searchByNamePhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -274,7 +267,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
             String mRequest = "token=" + userToken + "&hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.LIKE_TASK);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.LIKE_FLASHCARD);
             mConn.execute(getString(R.string.likeListPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -345,22 +338,18 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void processFinish(HashMap<String, String> result) {
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
+        ConnectionTask.Mode requestMode = ConnectionTask.Mode.valueOf(result.get(ConnectionTask.Key.REQUEST_MODE));
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
 
-        switch(result.get(Constants.MODE)){
-            case Constants.GET_RECOM_TASK:
-                this.getRecommendedFlashcards_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.LIKE_TASK:
-                this.likeFlashcard_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.DOWNLOAD_LIST:
-                this.downloadFlashcard_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.REMOVE_FLASHCARD:
-                this.removeFlashcard_callback(result.get(Constants.RESULT));
-                break;
-        }
+        if(requestMode == ConnectionTask.Mode.GET_RECOMMENDED_FLASHCARDS)
+            this.getRecommendedFlashcards_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.LIKE_FLASHCARD)
+            this.likeFlashcard_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.DOWNLOAD_FLASHCARD)
+            this.downloadFlashcard_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.REMOVE_FLASHCARD)
+            this.removeFlashcard_callback(requestResponse);
 
         this.progressBar.setVisibility(View.GONE);
         this.mAdapter.notifyDataSetChanged();
@@ -387,7 +376,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
             String mRequest = "hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.DOWNLOAD_LIST);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.DOWNLOAD_FLASHCARD);
             mConn.execute(getString(R.string.getListContentByHashPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -462,7 +451,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
             String mRequest = "token=" + userToken + "&hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.REMOVE_FLASHCARD);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.REMOVE_FLASHCARD);
             mConn.execute(getString(R.string.deleteListPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);

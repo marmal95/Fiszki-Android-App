@@ -48,7 +48,7 @@ public class ResultActivity extends AppCompatActivity {
         else if(percScore < 10.0)
             scoreInfo.setTextColor(ContextCompat.getColor(ResultActivity.this, R.color.veryWeakScore));
 
-        ProgressBar pr = (ProgressBar)findViewById(R.id.progressBar);
+        ProgressBar pr = findViewById(R.id.progressBar);
         pr.setMax(200);
         pr.setProgress(150);
         pr.setMax(100);

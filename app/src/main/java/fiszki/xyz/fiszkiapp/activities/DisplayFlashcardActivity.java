@@ -41,14 +41,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 
-import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
-import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.utils.Functions;
-import fiszki.xyz.fiszkiapp.utils.Constants;
-import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
+import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.source.Settings;
 import fiszki.xyz.fiszkiapp.source.User;
+import fiszki.xyz.fiszkiapp.utils.Constants;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.Pair;
 
 public class DisplayFlashcardActivity extends AppCompatActivity implements AsyncResponse {
@@ -251,17 +251,17 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
      * Initializes all ui components
      */
     private void initializeGUI() {
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressLabel = (TextView) findViewById(R.id.progressLabel);
-        flashcardProgress = (SeekBar) findViewById(R.id.seekBarProgress);
-        errorsLabel = (TextView) findViewById(R.id.errorLabel);
-        wordLabel = (TextView) findViewById(R.id.wordToTranslate);
-        translationLabel = (TextView) findViewById(R.id.wordTranslation);
-        translationInput = (EditText)findViewById(R.id.inputTranslation);
+        progressBar = findViewById(R.id.progressBar);
+        progressLabel = findViewById(R.id.progressLabel);
+        flashcardProgress = findViewById(R.id.seekBarProgress);
+        errorsLabel = findViewById(R.id.errorLabel);
+        wordLabel = findViewById(R.id.wordToTranslate);
+        translationLabel = findViewById(R.id.wordTranslation);
+        translationInput = findViewById(R.id.inputTranslation);
 
-        knowButton = (Button) findViewById(R.id.knowButton);
-        dontKnowButton = (Button) findViewById(R.id.dontKnowButton);
-        showTranslation = (Button) findViewById(R.id.showTranslation);
+        knowButton = findViewById(R.id.knowButton);
+        dontKnowButton = findViewById(R.id.dontKnowButton);
+        showTranslation = findViewById(R.id.showTranslation);
 
         wordLabel.setVisibility(View.INVISIBLE);
         translationLabel.setVisibility(View.INVISIBLE);
@@ -635,7 +635,7 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
             String mRequest = "hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.GET_FLASHCARD_CONTENT);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.GET_FLASHCARD_CONTENT);
             mConn.execute(getString(R.string.getListContentByHashPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -790,7 +790,7 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
                     + "&lang=" + flashcard.getLangFrom() + "&lang2=" + flashcard.getLangTo();
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.ADD_LIST);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.ADD_FLASHCARD);
             mConn.execute(getString(R.string.addListPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -886,15 +886,15 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
      * @param output <MODE/RESULT> response from the server
      */
     @Override
-    public void processFinish(HashMap<String, String> output) {
-        switch (output.get(Constants.MODE)) {
-            case Constants.GET_FLASHCARD_CONTENT:
-                getFlashcardContent_callback(output.get(Constants.RESULT));
-                break;
-            case Constants.ADD_LIST:
-                addList_callback(output.get(Constants.RESULT));
-                break;
-        }
-        progressBar.setVisibility(View.INVISIBLE);
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> output) {
+        ConnectionTask.Mode requestMode = ConnectionTask.Mode.valueOf(output.get(ConnectionTask.Key.REQUEST_MODE));
+        String requestResponse = output.get(ConnectionTask.Key.REQUEST_RESPONSE);
+
+        if(requestMode == ConnectionTask.Mode.GET_FLASHCARD_CONTENT)
+            getFlashcardContent_callback(requestResponse);
+        else if (requestMode == ConnectionTask.Mode.ADD_FLASHCARD)
+            addList_callback(requestResponse);
+
+        progressBar.setVisibility(View.GONE);
     }
 }

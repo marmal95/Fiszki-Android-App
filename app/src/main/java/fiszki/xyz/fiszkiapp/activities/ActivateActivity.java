@@ -16,11 +16,9 @@ import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 import fiszki.xyz.fiszkiapp.source.RequestBuilder;
-import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.IntentKey;
 
-// TODO: Test
 public class ActivateActivity extends AppCompatActivity implements AsyncResponse {
 
     private EditText userEmailArea;
@@ -32,9 +30,9 @@ public class ActivateActivity extends AppCompatActivity implements AsyncResponse
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activate);
 
-        this.userEmailArea = (EditText)findViewById(R.id.emailArea);
-        this.userCodeArea = (EditText) findViewById(R.id.codeArea);
-        this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        this.userEmailArea = findViewById(R.id.emailArea);
+        this.userCodeArea = findViewById(R.id.codeArea);
+        this.progressBar = findViewById(R.id.progressBar);
 
         if(getIntent().getStringExtra(IntentKey.EMAIL.name()) != null) {
             this.userEmailArea.setText(getIntent().getStringExtra(IntentKey.EMAIL.name()));
@@ -62,7 +60,7 @@ public class ActivateActivity extends AppCompatActivity implements AsyncResponse
                 String request = requestBuilder.buildRequest();
                 progressBar.setVisibility(View.VISIBLE);
 
-                final ConnectionTask connection = new ConnectionTask(this, Constants.ACTIVATE_ACC_TASK);
+                final ConnectionTask connection = new ConnectionTask(this, ConnectionTask.Mode.ACTIVATE_ACCOUNT);
                 connection.execute(getString(R.string.activateAccountPhp), request);
                 createCancelConnectionHandler(connection);
             }
@@ -75,11 +73,11 @@ public class ActivateActivity extends AppCompatActivity implements AsyncResponse
     }
 
     @Override
-    public void processFinish(HashMap<String, String> result) {
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
         progressBar.setVisibility(View.GONE);
 
-        String output = result.get(Constants.RESULT);
-        int responseCode = Integer.valueOf(output);
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
+        int responseCode = Integer.valueOf(requestResponse);
 
         switch(responseCode) {
             case ResponseCode.SUCCESS:

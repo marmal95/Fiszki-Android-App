@@ -77,9 +77,9 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
         this.mFlashcards = new ArrayList<>();
 
         // Initialize GUI Components
-        this.mListView = (ListView)findViewById(R.id.listView);
-        this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        this.swiperefresh = (SwipeRefreshLayout)findViewById(R.id.swiperefresh);
+        this.mListView = findViewById(R.id.listView);
+        this.progressBar = findViewById(R.id.progressBar);
+        this.swiperefresh = findViewById(R.id.swiperefresh);
 
         this.mAdapter = new FlashcardsAdapter(this, R.layout.list_view_item_my_flashcard, this.mFlashcards);
         this.mListView.setAdapter(this.mAdapter);
@@ -201,7 +201,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
             String mRequest = "token=" + userToken + "&hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.LIKE_TASK);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.LIKE_FLASHCARD);
             mConn.execute(getString(R.string.likeListPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -242,7 +242,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
             String mRequest = "token=" + userToken;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.GET_MINE_TASK);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.GET_MY_FLASHCARDS);
             mConn.execute(getString(R.string.listsByTokenPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -296,7 +296,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
             String mRequest = "token=" + userToken + "&hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.REMOVE_FLASHCARD);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.REMOVE_FLASHCARD);
             mConn.execute(getString(R.string.deleteListPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -401,21 +401,18 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
      * @param result
      */
     @Override
-    public void processFinish(HashMap<String, String> result) {
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
+        ConnectionTask.Mode requestMode = ConnectionTask.Mode.valueOf(result.get(ConnectionTask.Key.REQUEST_MODE));
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
 
-        switch(result.get(Constants.MODE)){
-            case Constants.GET_MINE_TASK:
-                this.getFlashcards_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.LIKE_TASK:
-                this.likeFlashcard_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.REMOVE_FLASHCARD:
-                this.removeFlashcard_callback(result.get(Constants.RESULT));
-                break;
-            case Constants.DOWNLOAD_LIST:
-                this.downloadFlashcard_callback(result.get(Constants.RESULT));
-        }
+        if(requestMode == ConnectionTask.Mode.GET_MY_FLASHCARDS)
+            this.getFlashcards_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.LIKE_FLASHCARD)
+            this.likeFlashcard_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.REMOVE_FLASHCARD)
+            this.removeFlashcard_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.DOWNLOAD_FLASHCARD)
+            this.downloadFlashcard_callback(requestResponse);
 
         this.mAdapter.notifyDataSetChanged();
         progressBar.setVisibility(View.GONE);
@@ -461,13 +458,13 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
                 R.layout.spinner_item, getResources().getStringArray(R.array.languages));
 
         // dialog components
-        final EditText name = (EditText)dialog.findViewById(R.id.cardName);
-        final Spinner spinner1 = (Spinner)dialog.findViewById(R.id.spinner1);
-        final Spinner spinner2 = (Spinner)dialog.findViewById(R.id.spinner2);
-        TextView dialogHeader = (TextView)dialog.findViewById(R.id.dialogHeader);
-        Button ok = (Button)dialog.findViewById(R.id.okButton);
-        Button cancel = (Button)dialog.findViewById(R.id.cancelButton);
-        ImageView visit_www_banner = (ImageView)dialog.findViewById(R.id.visit_www_banner);
+        final EditText name = dialog.findViewById(R.id.cardName);
+        final Spinner spinner1 = dialog.findViewById(R.id.spinner1);
+        final Spinner spinner2 = dialog.findViewById(R.id.spinner2);
+        TextView dialogHeader = dialog.findViewById(R.id.dialogHeader);
+        Button ok = dialog.findViewById(R.id.okButton);
+        Button cancel = dialog.findViewById(R.id.cancelButton);
+        ImageView visit_www_banner = dialog.findViewById(R.id.visit_www_banner);
 
         if(getString(R.string.locale).equals("pl"))
             visit_www_banner.setImageResource(R.drawable.create_www_pl);
@@ -575,7 +572,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
             String mRequest = "hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.DOWNLOAD_LIST);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.DOWNLOAD_FLASHCARD);
             mConn.execute(getString(R.string.getListContentByHashPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);

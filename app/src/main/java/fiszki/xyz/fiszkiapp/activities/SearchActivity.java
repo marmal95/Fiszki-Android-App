@@ -3,9 +3,9 @@ package fiszki.xyz.fiszkiapp.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -35,14 +35,14 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
-import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.utils.Functions;
-import fiszki.xyz.fiszkiapp.utils.Constants;
-import fiszki.xyz.fiszkiapp.source.Flashcard;
-import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
+import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
+import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.source.User;
+import fiszki.xyz.fiszkiapp.utils.Constants;
+import fiszki.xyz.fiszkiapp.utils.Functions;
 
 public class SearchActivity extends AppCompatActivity implements AsyncResponse {
 
@@ -62,8 +62,8 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
         setTitle(getString(R.string.searchFlashcard));
 
         // Initialize GUI components
-        this.mListView = (ListView)findViewById(R.id.listView);
-        this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        this.mListView = findViewById(R.id.listView);
+        this.progressBar = findViewById(R.id.progressBar);
 
         // Create Data Objects
         this.flashcards = new ArrayList<>();
@@ -178,20 +178,20 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
         dialog.setContentView(R.layout.dialog_search_lists);
 
         // Get dialog ui
-        TextView header = (TextView)dialog.findViewById(R.id.dialogHeader);
+        TextView header = dialog.findViewById(R.id.dialogHeader);
         header.setText(getString(R.string.searchFlashcard));
 
-        final EditText query = (EditText)dialog.findViewById(R.id.query);
+        final EditText query = dialog.findViewById(R.id.query);
 
         // Query method (name / hash)
-        final Spinner spinner1 = (Spinner)dialog.findViewById(R.id.spinner1);
+        final Spinner spinner1 = dialog.findViewById(R.id.spinner1);
 
         // Language
-        final Spinner spinner2 = (Spinner)dialog.findViewById(R.id.spinner2);
+        final Spinner spinner2 = dialog.findViewById(R.id.spinner2);
 
         // Buttons
-        Button okButton = (Button)dialog.findViewById(R.id.okButton);
-        Button canButton = (Button)dialog.findViewById(R.id.cancelButton);
+        Button okButton = dialog.findViewById(R.id.okButton);
+        Button canButton = dialog.findViewById(R.id.cancelButton);
 
         // Set adapters
         ArrayAdapter<String> spinner1Adapter = new ArrayAdapter<>(this, R.layout.spinner_item,
@@ -270,7 +270,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
             String mRequest = "name=" + name + "&lang=" + lang;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.SEARCH_BY_NAME);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.SEARCH_BY_NAME);
             mConn.execute(getString(R.string.searchListByNamePhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -353,7 +353,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
             String mRequest = "hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.SEARCH_BY_HASH);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.SEARCH_BY_HASH);
             mConn.execute(getString(R.string.getListContentByHashPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -410,7 +410,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
             String mRequest = "token=" + userToken + "&hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.LIKE_TASK);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.LIKE_FLASHCARD);
             mConn.execute(getString(R.string.likeListPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -476,7 +476,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
             String mRequest = "hash=" + hash;
 
             // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, Constants.DOWNLOAD_LIST);
+            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.DOWNLOAD_FLASHCARD);
             mConn.execute(getString(R.string.getListContentByHashPhp), mRequest);
 
             progressBar.setVisibility(View.VISIBLE);
@@ -534,21 +534,18 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
     }
 
     @Override
-    public void processFinish(HashMap<String, String> output) {
-        switch(output.get(Constants.MODE)){
-            case Constants.SEARCH_BY_NAME:
-                searchByName_callback(output.get(Constants.RESULT));
-                break;
-            case Constants.SEARCH_BY_HASH:
-                searchByHash_callback(output.get(Constants.RESULT));
-                break;
-            case Constants.LIKE_TASK:
-                likeFlashcard_callback(output.get(Constants.RESULT));
-                break;
-            case Constants.DOWNLOAD_LIST:
-                downloadFlashcard_callback(output.get(Constants.RESULT));
-                break;
-        }
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> output) {
+        ConnectionTask.Mode requestMode = ConnectionTask.Mode.valueOf(output.get(ConnectionTask.Key.REQUEST_MODE));
+        String requestResponse = output.get(ConnectionTask.Key.REQUEST_RESPONSE);
+
+        if(requestMode == ConnectionTask.Mode.SEARCH_BY_NAME)
+            searchByName_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.SEARCH_BY_HASH)
+            searchByHash_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.LIKE_FLASHCARD)
+            likeFlashcard_callback(requestResponse);
+        else if(requestMode == ConnectionTask.Mode.DOWNLOAD_FLASHCARD)
+            downloadFlashcard_callback(requestResponse);
 
         progressBar.setVisibility(View.GONE);
         mAdapter.notifyDataSetChanged();
