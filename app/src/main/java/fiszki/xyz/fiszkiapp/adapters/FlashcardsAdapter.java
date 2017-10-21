@@ -96,6 +96,9 @@ public class FlashcardsAdapter extends ArrayAdapter<Flashcard> {
             case "it":
                 flagImageView.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.italy_icon));
                 break;
+            default:
+                flagImageView.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.unknown_flag));
+                break;
         }
     }
 }

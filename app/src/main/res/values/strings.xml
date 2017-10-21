@@ -2,7 +2,7 @@
     <string name="interstitial_full_screen" translatable="false">ca-app-pub-7589746352968073/7206581544</string>
     <string name="baner_ad" translatable="false">ca-app-pub-7589746352968073/8899428742</string>
 
-    <string name="getTokenPhp" translatable="false">https://fiszki.xyz/api/getToken.php</string>
+    <string name="getTokenPhp" translatable="false">https://fiszki.xyz/api/api2/getToken.php</string>
     <string name="registerPhp" translatable="false">https://fiszki.xyz/api/register.php</string>
     <string name="activateAccountPhp" translatable="false">https://fiszki.xyz/api/activateAccount.php</string>
     <string name="forgotPasswordPhp" translatable="false">https://fiszki.xyz/api/forgotPassword.php</string>

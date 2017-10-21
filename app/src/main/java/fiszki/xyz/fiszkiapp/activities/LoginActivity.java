@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -33,7 +35,7 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_login);
 
         if (!Functions.isOnline(getApplicationContext()))
-            Toast.makeText(LoginActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
+            Functions.showToast(LoginActivity.this, getString(R.string.noConnectionWarning));
 
         this.userEmailArea = (EditText) findViewById(R.id.emailArea);
         this.userPasswordArea = (EditText) findViewById(R.id.passwordArea);
@@ -50,12 +52,12 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
         String userPassword = this.userPasswordArea.getText().toString();
 
         if (userEmail.isEmpty() || userPassword.isEmpty())
-            Toast.makeText(LoginActivity.this, getString(R.string.fillEmailAndPassword), Toast.LENGTH_LONG).show();
+            Functions.showToast(LoginActivity.this, getString(R.string.fillEmailAndPassword));
         else if (!Functions.validateEmail(userEmail))
-            Toast.makeText(LoginActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
+            Functions.showToast(LoginActivity.this, getString(R.string.emailFormatIncorrect));
         else {
             if (!Functions.isOnline(getApplicationContext()))
-                Toast.makeText(LoginActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
+                Functions.showToast(LoginActivity.this, getString(R.string.noConnectionWarning));
             else {
                 RequestBuilder requestBuilder = new RequestBuilder();
                 requestBuilder.putParameter("email", userEmail);
@@ -90,35 +92,44 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
     @Override
     public void processFinish(HashMap<String, String> result) {
         progressBar.setVisibility(View.GONE);
-        String output = result.get(Constants.RESULT);
 
-        // TODO: Enum (when api will be ready...)
-        switch (output) {
-            case "0":
-                Toast.makeText(LoginActivity.this, getResources().
-                        getString(R.string.emailOrPasswIncorrect), Toast.LENGTH_LONG).show();
+        int responseCode = ResponseCode.INIT_CODE;
+        String userToken = null;
+        try {
+            JSONObject c = new JSONObject(result.get(Constants.RESULT));
+            responseCode = c.getInt("status");
+            userToken = c.optString("token", null);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        switch (responseCode) {
+            case ResponseCode.INIT_CODE:
+                Functions.showToast(this, getString(R.string.connectionProblem));
                 break;
 
-            case "":
-                Toast.makeText(LoginActivity.this, getResources().
-                        getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
+            case ResponseCode.SUCCESS:
+                handleSuccessLogon(userToken);
                 break;
 
-            case "-1":
-                Toast.makeText(LoginActivity.this, getResources().
-                        getString(R.string.accountNotActive), Toast.LENGTH_LONG).show();
+            case ResponseCode.WRONG_DATA_FORMAT:
+                Functions.showToast(this, getString(R.string.dataFormatIncorrect));
                 break;
 
-            default:
-                AppPreferences appPreferences = AppPreferences.getInstance(getApplicationContext());
-                appPreferences.put(AppPreferences.Key.USER_TOKEN, output);
-
-                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+            case ResponseCode.WRONG_DATA:
+                Functions.showToast(this, getString(R.string.emailOrPasswIncorrect));
                 break;
         }
+    }
+
+    private void handleSuccessLogon(String userToken) {
+        AppPreferences appPreferences = AppPreferences.getInstance(getApplicationContext());
+        appPreferences.put(AppPreferences.Key.USER_TOKEN, userToken);
+
+        Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void createCancelConnectionHandler(final ConnectionTask connection) {
@@ -129,9 +140,16 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
                 if(connection.getStatus() == AsyncTask.Status.RUNNING) {
                     connection.cancel(true);
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(LoginActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
+                    Functions.showToast(LoginActivity.this, getString(R.string.connectionProblem));
                 }
             }
         }, 10000);
+    }
+
+    private class ResponseCode {
+        static final int INIT_CODE = -1;
+        static final int SUCCESS = 1;
+        static final int WRONG_DATA_FORMAT = 2;
+        static final int WRONG_DATA = 3;
     }
 }
