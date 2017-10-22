@@ -14,6 +14,7 @@ import java.util.HashMap;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
 
 public class ConnectionTask extends AsyncTask<String, Void, String> {
+    public static final int TIME_LIMIT_MS = 10_000;
 
     private AsyncResponse delegate;
     private ConnectionTask.Mode mode;

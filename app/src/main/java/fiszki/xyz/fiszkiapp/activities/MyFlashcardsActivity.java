@@ -216,7 +216,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
                         Toast.makeText(MyFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -257,7 +257,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
                         Toast.makeText(MyFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -311,7 +311,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
                         Toast.makeText(MyFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -587,7 +587,7 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
                         Toast.makeText(MyFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 

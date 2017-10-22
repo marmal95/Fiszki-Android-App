@@ -142,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
                     Functions.showToast(LoginActivity.this, getString(R.string.connectionProblem));
                 }
             }
-        }, 10000);
+        }, ConnectionTask.TIME_LIMIT_MS);
     }
 
     private class ResponseCode {

@@ -14,45 +14,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
+import fiszki.xyz.fiszkiapp.source.RequestBuilder;
 import fiszki.xyz.fiszkiapp.source.User;
 import fiszki.xyz.fiszkiapp.utils.Functions;
 
 public class MenuActivity extends AppCompatActivity implements AsyncResponse {
 
-    // GUI Components
     private ProgressBar progressBar;
 
-    /**
-     * {@inheritDoc}
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-
         setTitle(getString(R.string.fiszkiMenu));
 
         this.progressBar = findViewById(R.id.progressBar);
 
-        /*
-        If user has previous version of application he need to be logout
-        to save his token in static variable in User class
-        otherwise application may be crashed as User.user_token == null
-        or there is no user_token saved needed to download all data
-         */
         String user_token = User.getInstance(this).getUserToken();
         if(user_token == null)
         {
@@ -67,25 +53,13 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
             this.getUserInfo(user_token);
     }
 
-    /**
-     * {@inheritDoc}
-     * @param menu
-     * @return
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu_activity_menu, menu);
-
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     * @param item
-     * @return
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
@@ -94,43 +68,6 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * Sends POST request to download user info
-     */
-    private void getUserInfo(String token){
-        if(!Functions.isOnline(getApplicationContext()))
-            Toast.makeText(MenuActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
-        else{
-            // Encode POST arguments(email and password) with UTF-8 Encoder
-            try{
-                token = URLEncoder.encode(token, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            // Build POST Request
-            String mRequest = "token=" + token;
-
-            // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.GET_USER_INFO);
-            mConn.execute(getString(R.string.userInfoByToken), mRequest);
-
-            progressBar.setVisibility(View.VISIBLE);
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(mConn.getStatus() == AsyncTask.Status.RUNNING) {
-                        mConn.cancel(true);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(MenuActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, 10000);
         }
     }
 
@@ -164,14 +101,28 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
         startActivity(intent);
     }
 
-    /**
-     * Logs out the user from Fiszki app.
-     * Removes the token from SharedPreferences.
-     */
+    @Override
+    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
+
+        try {
+            JSONObject c = new JSONObject(requestResponse);
+            User user = User.getInstance(getApplicationContext());
+            user.setName(c.getString("name"));
+            user.setUserId(c.getString("user_id"));
+            user.setEmail(c.getString("email"));
+            user.setFullName(c.getString("full_name"));
+            user.setPermission(c.getString("permission"));
+            user.setTimeCreated(c.getString("time_created"));
+            user.setLastActivity(c.getString("last_list_activity"));
+        } catch (JSONException e) {
+            logout();
+        }
+    }
+
     private void logout() {
         User.getInstance(this).clearUserData(this);
-
-        Toast.makeText(this, getString(R.string.userLogout), Toast.LENGTH_LONG).show();
+        Functions.showToast(this, getString(R.string.userLogout));
 
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -199,11 +150,11 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
                 i.setType("message/rfc822");
                 i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"dev.marmal195@gmail.com"});
                 i.putExtra(Intent.EXTRA_SUBJECT, "[" + User.getInstance(MenuActivity.this).getName() + "]: " + topic.getText().toString());
-                i.putExtra(Intent.EXTRA_TEXT   , message.getText().toString());
+                i.putExtra(Intent.EXTRA_TEXT, message.getText().toString());
                 try {
                     startActivity(Intent.createChooser(i, getString(R.string.sendEmail)));
                 } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(MenuActivity.this, getString(R.string.noEmailClientInstalled), Toast.LENGTH_LONG).show();
+                    Functions.showToast(MenuActivity.this, getString(R.string.noEmailClientInstalled));
                 }
                 dialog.dismiss();
             }
@@ -219,27 +170,33 @@ public class MenuActivity extends AppCompatActivity implements AsyncResponse {
         dialog.show();
     }
 
-    /**
-     * {@inheritDoc}
-     * @param result
-     */
-    @Override
-    public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
-        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
+    private void getUserInfo(String token){
+        if(!Functions.isOnline(getApplicationContext()))
+            Functions.showToast(this, getString(R.string.noConnectionWarning));
+        else{
+            RequestBuilder requestBuilder = new RequestBuilder();
+            requestBuilder.putParameter("token", token);
 
-        try {
-            JSONObject c = new JSONObject(requestResponse);
-            User user = User.getInstance(getApplicationContext());
-            user.setName(c.getString("name"));
-            user.setUserId(c.getString("user_id"));
-            user.setEmail(c.getString("email"));
-            user.setFullName(c.getString("full_name"));
-            user.setPermission(c.getString("permission"));
-            user.setTimeCreated(c.getString("time_created"));
-            user.setLastActivity(c.getString("last_list_activity"));
+            String request = requestBuilder.buildRequest();
+            progressBar.setVisibility(View.VISIBLE);
 
-        } catch (JSONException e) {
-            logout();
+            final ConnectionTask connection = new ConnectionTask(this, ConnectionTask.Mode.GET_USER_INFO);
+            connection.execute(getString(R.string.userInfoByToken), request);
+            createCancelConnectionHandler(connection);
         }
+    }
+
+    private void createCancelConnectionHandler(final ConnectionTask connection) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(connection.getStatus() == AsyncTask.Status.RUNNING) {
+                    connection.cancel(true);
+                    progressBar.setVisibility(View.GONE);
+                    Functions.showToast(MenuActivity.this, getString(R.string.connectionProblem));
+                }
+            }
+        }, ConnectionTask.TIME_LIMIT_MS);
     }
 }

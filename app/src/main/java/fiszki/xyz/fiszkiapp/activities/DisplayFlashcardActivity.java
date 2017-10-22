@@ -650,7 +650,7 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
                         Toast.makeText(DisplayFlashcardActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -805,7 +805,7 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
                         Toast.makeText(DisplayFlashcardActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 

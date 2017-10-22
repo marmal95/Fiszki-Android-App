@@ -285,7 +285,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
                         Toast.makeText(SearchActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -368,7 +368,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
                         Toast.makeText(SearchActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -425,7 +425,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
                         Toast.makeText(SearchActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -491,7 +491,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
                         Toast.makeText(SearchActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 

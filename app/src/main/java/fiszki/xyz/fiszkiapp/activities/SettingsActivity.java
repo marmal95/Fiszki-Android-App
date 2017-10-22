@@ -377,7 +377,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
                         Toast.makeText(SettingsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -437,7 +437,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
                             Toast.makeText(SettingsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                         }
                     }
-                }, 10000);
+                }, ConnectionTask.TIME_LIMIT_MS);
             }
         }
     }
@@ -574,7 +574,7 @@ public class SettingsActivity extends AppCompatActivity implements AsyncResponse
                         Toast.makeText(SettingsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 

@@ -239,7 +239,7 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
                     Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                 }
             }
-        }, 10000);
+        }, ConnectionTask.TIME_LIMIT_MS);
     }
 
     private void manageListCallback(int responseCode){
@@ -319,7 +319,7 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
                         Toast.makeText(PreviewFlashcardActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 

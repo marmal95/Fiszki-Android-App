@@ -109,7 +109,7 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
                     Functions.showToast(RestorePasswordActivity.this, getString(R.string.connectionProblem));
                 }
             }
-        }, 10000);
+        }, ConnectionTask.TIME_LIMIT_MS);
     }
 
     private class ResponseCode {

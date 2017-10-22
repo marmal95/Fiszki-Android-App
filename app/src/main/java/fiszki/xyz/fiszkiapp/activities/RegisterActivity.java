@@ -108,7 +108,7 @@ public class RegisterActivity extends AppCompatActivity implements AsyncResponse
                     Functions.showToast(RegisterActivity.this, getString(R.string.connectionProblem));
                 }
             }
-        }, 10000);
+        }, ConnectionTask.TIME_LIMIT_MS);
     }
 
     private class ResponseCode {

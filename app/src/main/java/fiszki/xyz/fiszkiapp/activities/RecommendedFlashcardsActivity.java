@@ -245,7 +245,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
                         Toast.makeText(RecommendedFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -282,7 +282,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
                         Toast.makeText(RecommendedFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -391,7 +391,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
                         Toast.makeText(RecommendedFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
@@ -466,7 +466,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
                         Toast.makeText(RecommendedFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
                     }
                 }
-            }, 10000);
+            }, ConnectionTask.TIME_LIMIT_MS);
         }
     }
 
