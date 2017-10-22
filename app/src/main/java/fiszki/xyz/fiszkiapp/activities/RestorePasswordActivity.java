@@ -7,20 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
+import fiszki.xyz.fiszkiapp.source.RequestBuilder;
 import fiszki.xyz.fiszkiapp.utils.Functions;
 
 public class RestorePasswordActivity extends AppCompatActivity implements AsyncResponse {
 
-    // GUI Components
     private EditText userEmailArea;
     private EditText userNameArea;
     private ProgressBar progressBar;
@@ -30,54 +27,34 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restore_password);
 
-        // Initialize GUI components
         this.userEmailArea = findViewById(R.id.emailArea);
         this.userNameArea = findViewById(R.id.nameArea);
         this.progressBar = findViewById(R.id.progressBar);
     }
 
     public void restoreButton_onClick(View view) {
-        // Get user email and password from login screen
         String userEmail = this.userEmailArea.getText().toString();
         String userName = this.userNameArea.getText().toString();
 
-        if(userEmail.equals("") || userName.equals(""))
-            Toast.makeText(RestorePasswordActivity.this, getString(R.string.fillEmailAndPassword), Toast.LENGTH_LONG).show();
+        if(userEmail.isEmpty() || userName.isEmpty())
+            Functions.showToast(this, getString(R.string.fillEmailAndPassword));
         else if(!Functions.validateEmail(userEmail))
-            Toast.makeText(RestorePasswordActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
+            Functions.showToast(this, getString(R.string.emailFormatIncorrect));
         else{
             if(!Functions.isOnline(getApplicationContext()))
-                Toast.makeText(RestorePasswordActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
+                Functions.showToast(this, getString(R.string.noConnectionWarning));
             else {
+                RequestBuilder requestBuilder = new RequestBuilder();
+                requestBuilder.putParameter("email", userEmail);
+                requestBuilder.putParameter("name", userName);
+                requestBuilder.encodeParameters("UTF-8");
 
-                // Encode both POST arguments(email and password) with UTF-8 Encoder
-                try{
-                    userEmail = URLEncoder.encode(userEmail, "UTF-8");
-                    userName = URLEncoder.encode(userName, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                // Build POST Request
-                String mRequest = "email=" + userEmail + "&name=" + userName;
-
-                // Create and run ConnectionTask
-                final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.RESTORE_PASSWORD);
-                mConn.execute(getString(R.string.forgotPasswordPhp), mRequest);
-
+                String request = requestBuilder.buildRequest();
                 progressBar.setVisibility(View.VISIBLE);
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(mConn.getStatus() == AsyncTask.Status.RUNNING) {
-                            mConn.cancel(true);
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(RestorePasswordActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, 10000);
+                final ConnectionTask connection = new ConnectionTask(this, ConnectionTask.Mode.RESTORE_PASSWORD);
+                connection.execute(getString(R.string.forgotPasswordPhp), request);
+                createCancelConnectionHandler(connection);
             }
         }
     }
@@ -89,40 +66,58 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
 
     @Override
     public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
-
-        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
         progressBar.setVisibility(View.GONE);
 
-        switch(requestResponse){
-            case "0":
-                Toast.makeText(RestorePasswordActivity.this, getResources().
-                        getString(R.string.emailSendError), Toast.LENGTH_LONG).show();
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
+        int responseCode = Integer.valueOf(requestResponse);
+
+        switch(responseCode){
+            case ResponseCode.SEND_EMAIL_ERROR:
+                Functions.showToast(this, getString(R.string.emailSendError));
                 break;
 
-            case "1":
-                Toast.makeText(RestorePasswordActivity.this, getResources().
-                        getString(R.string.newPasswordSent), Toast.LENGTH_LONG).show();
+            case ResponseCode.SUCCESS:
+                Functions.showToast(this, getString(R.string.newPasswordSent));
                 break;
 
-            case "2":
-                Toast.makeText(RestorePasswordActivity.this, getResources().
-                        getString(R.string.incorrectFormat), Toast.LENGTH_LONG).show();
+            case ResponseCode.DATA_INCORRECT:
+                Functions.showToast(this, getString(R.string.incorrectFormat));
                 break;
 
-            case "3":
-                Toast.makeText(RestorePasswordActivity.this, getResources().
-                        getString(R.string.userNotExist), Toast.LENGTH_LONG).show();
+            case ResponseCode.USER_NOT_EXIST:
+                Functions.showToast(this, getString(R.string.userNotExist));
                 break;
 
-            case "4":
-                Toast.makeText(RestorePasswordActivity.this, getResources().
-                        getString(R.string.nameOrEmailIncorrect), Toast.LENGTH_LONG).show();
+            case ResponseCode.NAME_OR_EMAIL_INCORRECT:
+                Functions.showToast(this, getString(R.string.nameOrEmailIncorrect));
                 break;
 
             default:
-                Toast.makeText(RestorePasswordActivity.this, getResources().
-                        getString(R.string.errorOccurred), Toast.LENGTH_LONG).show();
+                Functions.showToast(this, getString(R.string.errorOccurred));
                 break;
         }
+    }
+
+    private void createCancelConnectionHandler(final ConnectionTask connection) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(connection.getStatus() == AsyncTask.Status.RUNNING) {
+                    connection.cancel(true);
+                    progressBar.setVisibility(View.GONE);
+                    Functions.showToast(RestorePasswordActivity.this, getString(R.string.connectionProblem));
+                }
+            }
+        }, 10000);
+    }
+
+    private class ResponseCode {
+        static final int INIT_CODE = -1;
+        static final int SEND_EMAIL_ERROR = 0;
+        static final int SUCCESS = 1;
+        static final int DATA_INCORRECT = 2;
+        static final int USER_NOT_EXIST = 3;
+        static final int NAME_OR_EMAIL_INCORRECT = 4;
     }
 }

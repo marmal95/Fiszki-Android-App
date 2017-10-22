@@ -93,9 +93,10 @@ public class LoginActivity extends AppCompatActivity implements AsyncResponse {
         progressBar.setVisibility(View.GONE);
 
         int responseCode = ResponseCode.INIT_CODE;
+        String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
         String userToken = null;
         try {
-            JSONObject c = new JSONObject(result.get(ConnectionTask.Key.REQUEST_RESPONSE));
+            JSONObject c = new JSONObject(requestResponse);
             responseCode = c.getInt("status");
             userToken = c.optString("token", null);
         } catch (JSONException e) {

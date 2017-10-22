@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -45,12 +47,12 @@ public class ActivateActivity extends AppCompatActivity implements AsyncResponse
         String userCode = this.userCodeArea.getText().toString();
 
         if(userEmail.isEmpty() || userCode.isEmpty())
-            Toast.makeText(ActivateActivity.this, getString(R.string.fillEmailAndCode), Toast.LENGTH_LONG).show();
+            Functions.showToast(this, getString(R.string.fillEmailAndCode));
         else if(!Functions.validateEmail(userEmail))
-            Toast.makeText(ActivateActivity.this, getString(R.string.emailFormatIncorrect), Toast.LENGTH_LONG).show();
+            Functions.showToast(this, getString(R.string.emailFormatIncorrect));
         else {
             if(!Functions.isOnline(getApplicationContext()))
-                Toast.makeText(ActivateActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
+                Functions.showToast(this, getString(R.string.noConnectionWarning));
             else {
                 RequestBuilder requestBuilder = new RequestBuilder();
                 requestBuilder.putParameter("email", userEmail);
@@ -77,23 +79,32 @@ public class ActivateActivity extends AppCompatActivity implements AsyncResponse
         progressBar.setVisibility(View.GONE);
 
         String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
-        int responseCode = Integer.valueOf(requestResponse);
+        int responseCode = ResponseCode.INIT_CODE;
+        try {
+            JSONObject jsonResponse = new JSONObject(requestResponse);
+            responseCode = jsonResponse.getInt("status");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         switch(responseCode) {
             case ResponseCode.SUCCESS:
-                Toast.makeText(ActivateActivity.this, getString(R.string.accountActivated), Toast.LENGTH_LONG).show();
+                Functions.showToast(this, getString(R.string.accountCreated));
                 Intent intent = new Intent(ActivateActivity.this, LoginActivity.class);
                 intent.putExtra(IntentKey.EMAIL.name(), userEmailArea.getText().toString());
                 startActivity(intent);
                 break;
             case ResponseCode.CODE_INCORRECT:
-                Toast.makeText(ActivateActivity.this, getString(R.string.codeIncorrect), Toast.LENGTH_LONG).show();
+                Functions.showToast(this, getString(R.string.codeIncorrect));
                 break;
             case ResponseCode.EMAIL_INCORRECT:
-                Toast.makeText(ActivateActivity.this, getString(R.string.emailIncorrect), Toast.LENGTH_LONG).show();
+                Functions.showToast(this, getString(R.string.emailIncorrect));
                 break;
             case ResponseCode.DATE_FORMAT_INCORRECT:
-                Toast.makeText(ActivateActivity.this, getString(R.string.dataFormatIncorrect), Toast.LENGTH_LONG).show();
+                Functions.showToast(this, getString(R.string.dataFormatIncorrect));
+                break;
+            default:
+                Functions.showToast(this, getString(R.string.errorOccurred));
                 break;
         }
     }
@@ -106,16 +117,18 @@ public class ActivateActivity extends AppCompatActivity implements AsyncResponse
                 if(connection.getStatus() == AsyncTask.Status.RUNNING) {
                     connection.cancel(true);
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(ActivateActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
+                    Functions.showToast(ActivateActivity.this, getString(R.string.connectionProblem));
                 }
             }
         }, 10000);
     }
 
     private class ResponseCode {
+        static final int INIT_CODE = -1;
         static final int SUCCESS = 1;
         static final int CODE_INCORRECT = 2;
         static final int EMAIL_INCORRECT = 3;
         static final int DATE_FORMAT_INCORRECT = 4;
+        static final int NOT_FOUND_DATA = 5;
     }
 }
