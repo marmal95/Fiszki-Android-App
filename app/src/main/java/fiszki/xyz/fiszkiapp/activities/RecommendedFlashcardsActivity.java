@@ -40,6 +40,7 @@ import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.source.User;
 import fiszki.xyz.fiszkiapp.utils.Constants;
+import fiszki.xyz.fiszkiapp.utils.IntentKey;
 
 public class RecommendedFlashcardsActivity extends AppCompatActivity implements AsyncResponse {
 
@@ -183,9 +184,9 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
                 break;
             case 1:
                 Intent intent = new Intent(RecommendedFlashcardsActivity.this, PreviewFlashcardActivity.class);
-                intent.putExtra(Constants.LIST, this.mFlashcards.get(info.position));
-                intent.putExtra(Constants.PARENT, Constants.REC_FLASHCARDS_ACT);
-                intent.putExtra(Constants.MODE_KEY, Constants.GLOBAL_MODE);
+                intent.putExtra(IntentKey.FLASHCARD.name(), this.mFlashcards.get(info.position));
+                intent.putExtra(IntentKey.PARENT_ACTIVITY.name(), Constants.REC_FLASHCARDS_ACT);
+                intent.putExtra(IntentKey.ACTIVITY_MODE.name(), Constants.GLOBAL_MODE);
                 startActivity(intent);
                 break;
             case 2:
@@ -508,7 +509,7 @@ public class RecommendedFlashcardsActivity extends AppCompatActivity implements 
 
     private void runFlashcard(int position){
         Intent intent = new Intent(RecommendedFlashcardsActivity.this, DisplayFlashcardActivity.class);
-        intent.putExtra(Constants.HASH, mFlashcards.get(position).getHash());
+        intent.putExtra(IntentKey.HASH.name(), mFlashcards.get(position).getHash());
         startActivity(intent);
     }
 }

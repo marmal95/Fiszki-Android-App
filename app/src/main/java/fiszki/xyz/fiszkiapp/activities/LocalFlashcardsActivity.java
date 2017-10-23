@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.utils.IntentKey;
 
 public class LocalFlashcardsActivity extends AppCompatActivity {
 
@@ -128,8 +129,8 @@ public class LocalFlashcardsActivity extends AppCompatActivity {
                 break;
             case 1:
                 Intent intent = new Intent(LocalFlashcardsActivity.this, PreviewFlashcardActivity.class);
-                intent.putExtra(Constants.MODE_KEY, Constants.LOCAL_MODE);
-                intent.putExtra(Constants.PARENT, Constants.LOCAL_FLASHCARD_ACT);
+                intent.putExtra(IntentKey.ACTIVITY_MODE.name(), Constants.LOCAL_MODE);
+                intent.putExtra(IntentKey.PARENT_ACTIVITY.name(), Constants.LOCAL_FLASHCARD_ACT);
                 intent.putExtra(Constants.CONTENT, this.readFlashcardFromFile(flashcards.get(info.position)));
                 startActivity(intent);
                 break;

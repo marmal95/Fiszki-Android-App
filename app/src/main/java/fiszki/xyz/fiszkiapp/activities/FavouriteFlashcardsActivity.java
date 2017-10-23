@@ -37,6 +37,7 @@ import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.source.User;
+import fiszki.xyz.fiszkiapp.utils.IntentKey;
 
 /**
  * Keep and displays all user's favourite flashcards
@@ -144,9 +145,9 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
                 break;
             case 1:
                 Intent intent = new Intent(FavouriteFlashcardsActivity.this, PreviewFlashcardActivity.class);
-                intent.putExtra(Constants.LIST, this.mFlashcards.get(info.position));
-                intent.putExtra(Constants.PARENT, Constants.FAV_FLASHCARDS_ACT);
-                intent.putExtra(Constants.MODE_KEY, Constants.GLOBAL_MODE);
+                intent.putExtra(IntentKey.FLASHCARD.name(), this.mFlashcards.get(info.position));
+                intent.putExtra(IntentKey.PARENT_ACTIVITY.name(), Constants.FAV_FLASHCARDS_ACT);
+                intent.putExtra(IntentKey.ACTIVITY_MODE.name(), Constants.GLOBAL_MODE);
                 startActivity(intent);
                 break;
             case 2:
@@ -492,7 +493,7 @@ public class FavouriteFlashcardsActivity extends AppCompatActivity implements As
 
     private void runFlashcard(int position){
         Intent intent = new Intent(FavouriteFlashcardsActivity.this, DisplayFlashcardActivity.class);
-        intent.putExtra(Constants.HASH, mFlashcards.get(position).getHash());
+        intent.putExtra(IntentKey.HASH.name(), mFlashcards.get(position).getHash());
         startActivity(intent);
     }
 }

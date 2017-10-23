@@ -43,6 +43,7 @@ import fiszki.xyz.fiszkiapp.source.Flashcard;
 import fiszki.xyz.fiszkiapp.source.User;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.utils.Functions;
+import fiszki.xyz.fiszkiapp.utils.IntentKey;
 
 public class SearchActivity extends AppCompatActivity implements AsyncResponse {
 
@@ -116,9 +117,9 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
                 break;
             case 1:
                 Intent intent = new Intent(SearchActivity.this, PreviewFlashcardActivity.class);
-                intent.putExtra(Constants.LIST, this.flashcards.get(info.position));
-                intent.putExtra(Constants.PARENT, Constants.SEARCH_FLASHCARDS_ACT);
-                intent.putExtra(Constants.MODE_KEY, Constants.GLOBAL_MODE);
+                intent.putExtra(IntentKey.FLASHCARD.name(), this.flashcards.get(info.position));
+                intent.putExtra(IntentKey.PARENT_ACTIVITY.name(), Constants.SEARCH_FLASHCARDS_ACT);
+                intent.putExtra(IntentKey.ACTIVITY_MODE.name(), Constants.GLOBAL_MODE);
                 startActivity(intent);
                 break;
             case 2:
@@ -564,7 +565,7 @@ public class SearchActivity extends AppCompatActivity implements AsyncResponse {
 
     private void runFlashcard(int position){
         Intent intent = new Intent(SearchActivity.this, DisplayFlashcardActivity.class);
-        intent.putExtra(Constants.HASH, flashcards.get(position).getHash());
+        intent.putExtra(IntentKey.HASH.name(), flashcards.get(position).getHash());
         startActivity(intent);
         finish();
     }

@@ -35,20 +35,20 @@ public class Constants {
 //    public static final String CHANGE_USR_PASS = "CHANGE_USR_PASS";
 
 
-    public static final String LIST = "LIST";
-    public static final String PARENT = "PARENT";
+//    public static final String LIST = "LIST";
+//    public static final String PARENT = "PARENT";
     public static final String CONTENT = "CONTENT";
-    public static final String HASH = "HASH";
+   // public static final String HASH = "HASH";
     public static final String USER_RESULT = "USER_RESULT";
     public static final String NAME = "NAME";
 
-    public static final String MY_FLASHCARDS_ACT = "M_FLSHCRDS_ACT";
+   // public static final String MY_FLASHCARDS_ACT = "M_FLSHCRDS_ACT";
     public static final String FAV_FLASHCARDS_ACT = "FAV_FLSHCRDS_ACT";
     public static final String REC_FLASHCARDS_ACT = "REC_FLSHCRDS_ACT";
     public static final String LOCAL_FLASHCARD_ACT = "LOC_FLSHCRDS_ACT";
     public static final String SEARCH_FLASHCARDS_ACT = "SRCH_FLSHCRDS_ACT";
 
-    public static final String MODE_KEY = "MODE_KEY";
+    //public static final String MODE_KEY = "MODE_KEY";
     public static final int NULL_MODE = -1;
     public static final int LOCAL_MODE = 1944;
     public static final int GLOBAL_MODE = 1945;

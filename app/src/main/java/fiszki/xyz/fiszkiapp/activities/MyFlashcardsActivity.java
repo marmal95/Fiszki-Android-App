@@ -1,9 +1,9 @@
 package fiszki.xyz.fiszkiapp.activities;
 
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +23,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,129 +31,90 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
-import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
-import fiszki.xyz.fiszkiapp.utils.Functions;
-import fiszki.xyz.fiszkiapp.utils.Constants;
-import fiszki.xyz.fiszkiapp.source.Flashcard;
-import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
 import fiszki.xyz.fiszkiapp.R;
+import fiszki.xyz.fiszkiapp.adapters.FlashcardsAdapter;
+import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
+import fiszki.xyz.fiszkiapp.interfaces.AsyncResponse;
+import fiszki.xyz.fiszkiapp.source.AppPreferences;
+import fiszki.xyz.fiszkiapp.source.Flashcard;
+import fiszki.xyz.fiszkiapp.source.RequestBuilder;
 import fiszki.xyz.fiszkiapp.source.User;
+import fiszki.xyz.fiszkiapp.utils.Constants;
+import fiszki.xyz.fiszkiapp.utils.Functions;
+import fiszki.xyz.fiszkiapp.utils.IntentKey;
+import fiszki.xyz.fiszkiapp.utils.IntentValues;
 
-/**
- * Class displays to user their flashcards.
- * Implementing AsyncResponse to get callback from ConnectionTask.
- */
+
 public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResponse {
 
-    // GUI Components
     private ListView mListView;
     private ProgressBar progressBar;
 
     private FlashcardsAdapter mAdapter;
     private ArrayList<Flashcard> mFlashcards;
 
-    // SwipeRefresher
-    private SwipeRefreshLayout swiperefresh;
+    private SwipeRefreshLayout swipeRefresher;
 
-    /**
-     * {@inheritDoc}
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_flashcards);
-
         setTitle(getString(R.string.myFlashcards));
 
-        // Initialize Variables
         this.mFlashcards = new ArrayList<>();
 
-        // Initialize GUI Components
         this.mListView = findViewById(R.id.listView);
         this.progressBar = findViewById(R.id.progressBar);
-        this.swiperefresh = findViewById(R.id.swiperefresh);
+        this.swipeRefresher = findViewById(R.id.swiperefresh);
 
         this.mAdapter = new FlashcardsAdapter(this, R.layout.list_view_item_my_flashcard, this.mFlashcards);
         this.mListView.setAdapter(this.mAdapter);
-
-        // To "long click" on list item
         registerForContextMenu(this.mListView);
 
-        try {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        } catch(NullPointerException e){
-            e.printStackTrace();
-        }
+        setBackButton();
+        setListeners();
 
-        // Get user's Flashcards from server
-        this.getUserFlashcards();
-
-        // Set ListView item click listener
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            runFlashcard(position);
-            }
-        });
-
-        // Set SwipeRefresh listener
-        swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swiperefresh.setRefreshing(true);
-                mAdapter.clear();
-                getUserFlashcards();
-            }
-        });
+        getUserFlashcards();
     }
 
-    /**
-     * {@inheritDoc}
-     * @param menu
-     * @param v
-     * @param menuInfo
-     */
+    private void setBackButton() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if(v.getId() == R.id.listView){
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+        if (v.getId() == R.id.listView) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             menu.setHeaderTitle(mFlashcards.get(info.position).getName());
 
             String[] menuOptions = getResources().getStringArray(R.array.myFlashcardsMenuOptions);
-            for(int i = 0; i < menuOptions.length; ++i)
+            for (int i = 0; i < menuOptions.length; ++i)
                 menu.add(Menu.NONE, i, i, menuOptions[i]);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * @param item
-     * @return true when event handled, false otherwise
-     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int menuItemIndex = item.getItemId();
-        switch(menuItemIndex){
-            case 0: {
+        switch (menuItemIndex) {
+            case ContextMenuOption.RUN_FLASHCARD: {
                 runFlashcard(info.position);
                 break;
             }
-            case 1:
-                share(info.position);
+            case ContextMenuOption.PREVIEW_FLASHCARD:
+                previewFlashcard(info.position);
                 break;
-            case 2:
+            case ContextMenuOption.LIKE_FLASHCARD:
                 this.likeFlashcard(this.mFlashcards.get(info.position).getHash());
                 break;
-            case 3:
+            case ContextMenuOption.SHARE_FLASHCARD:
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBody = getString(R.string.shareFlashcardUrl, this.mFlashcards.get(info.position).getHash());
@@ -163,14 +123,13 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Share via"));
                 break;
-            case 4:
+            case ContextMenuOption.REMOVE_FLASHCARD:
                 this.removeFlashcard(this.mFlashcards.get(info.position).getHash());
                 this.mFlashcards.remove(info.position);
                 break;
-            case 5:
+            case ContextMenuOption.DOWNLOAD_FLASHCARD:
                 this.downloadFlashcard(this.mFlashcards.get(info.position).getHash());
                 break;
-
             default:
                 return false;
         }
@@ -178,154 +137,86 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
         return true;
     }
 
-    /**
-     * Likes the flashcard.
-     * Builds POST request, makes connection via ConnectionTask.
-     * @param hash flashcard hash
-     */
-    private void likeFlashcard(String hash){
-        if(!Functions.isOnline(getApplicationContext()))
-            Toast.makeText(MyFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
-        else{
-            String userToken = "";
+    private void likeFlashcard(String hash) {
+        if (!Functions.isOnline(getApplicationContext()))
+            Functions.showToast(this, getString(R.string.noConnectionWarning));
+        else {
+            User user = User.getInstance(getApplicationContext());
+            RequestBuilder requestBuilder = new RequestBuilder();
+            requestBuilder.putParameter("token", user.getUserToken());
+            requestBuilder.putParameter("hash", hash);
+            requestBuilder.encodeParameters("UTF-8");
 
-            // Encode POST arguments with UTF-8 Encoder
-            try{
-                userToken = URLEncoder.encode(User.getInstance(this).getUserToken(), "UTF-8");
-                hash = URLEncoder.encode(hash, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            // Build POST Request
-            String mRequest = "token=" + userToken + "&hash=" + hash;
-
-            // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.LIKE_FLASHCARD);
-            mConn.execute(getString(R.string.likeListPhp), mRequest);
-
+            String request = requestBuilder.buildRequest();
             progressBar.setVisibility(View.VISIBLE);
 
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(mConn.getStatus() == AsyncTask.Status.RUNNING) {
-                        mConn.cancel(true);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(MyFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, ConnectionTask.TIME_LIMIT_MS);
+            final ConnectionTask connection = new ConnectionTask(this, ConnectionTask.Mode.LIKE_FLASHCARD);
+            connection.execute(getString(R.string.likeListPhp), request);
+            createCancelConnectionHandler(connection);
         }
     }
 
-    /**
-     * Download user's flashcards from server.
-     * Builds POST request, runs ConnectionTask.
-     */
-    private void getUserFlashcards(){
-        if(!Functions.isOnline(getApplicationContext()))
-            Toast.makeText(MyFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
-        else{
+    private void getUserFlashcards() {
+        if (!Functions.isOnline(getApplicationContext()))
+            Functions.showToast(this, getString(R.string.noConnectionWarning));
+        else {
+            User user = User.getInstance(getApplicationContext());
+            RequestBuilder requestBuilder = new RequestBuilder();
+            requestBuilder.putParameter("token", user.getUserToken());
+            requestBuilder.encodeParameters("UTF-8");
 
-            String userToken = "";
-
-            // Encode POST arguments with UTF-8 Encoder
-            try{
-                userToken = URLEncoder.encode(User.getInstance(this).getUserToken(), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            // Build POST Request
-            String mRequest = "token=" + userToken;
-
-            // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.GET_MY_FLASHCARDS);
-            mConn.execute(getString(R.string.listsByTokenPhp), mRequest);
-
+            String request = requestBuilder.buildRequest();
             progressBar.setVisibility(View.VISIBLE);
 
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(mConn.getStatus() == AsyncTask.Status.RUNNING) {
-                        mConn.cancel(true);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(MyFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, ConnectionTask.TIME_LIMIT_MS);
+            final ConnectionTask connection = new ConnectionTask(this, ConnectionTask.Mode.GET_MY_FLASHCARDS);
+            connection.execute(getString(R.string.listsByTokenPhp), request);
+            createCancelConnectionHandler(connection);
         }
     }
 
-    /**
-     * Share user's flashcard
-     * @param position item position to share
-     */
-    private void share(int position){
-        Intent intent = new Intent(MyFlashcardsActivity.this, PreviewFlashcardActivity.class);
-        intent.putExtra(Constants.LIST, this.mFlashcards.get(position));
-        intent.putExtra(Constants.PARENT, Constants.MY_FLASHCARDS_ACT);
-        intent.putExtra(Constants.MODE_KEY, Constants.GLOBAL_MODE);
-        startActivity(intent);
-    }
+    private void removeFlashcard(String hash) {
+        if (!Functions.isOnline(getApplicationContext()))
+            Functions.showToast(this, getString(R.string.noConnectionWarning));
+        else {
+            User user = User.getInstance(getApplicationContext());
+            RequestBuilder requestBuilder = new RequestBuilder();
+            requestBuilder.putParameter("token", user.getUserToken());
+            requestBuilder.putParameter("hash", hash);
+            requestBuilder.encodeParameters("UTF-8");
 
-    /**
-     * Removes user's flashcard.
-     * Builds POST request, runs ConnectionTask.
-     * @param hash flashcard hash
-     */
-    private void removeFlashcard(String hash){
-        if(!Functions.isOnline(getApplicationContext()))
-            Toast.makeText(MyFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
-        else{
-            String userToken = "";
-
-            // Encode POST arguments with UTF-8 Encoder
-            try{
-                userToken = URLEncoder.encode(User.getInstance(this).getUserToken(), "UTF-8");
-                hash = URLEncoder.encode(hash, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            // Build POST Request
-            String mRequest = "token=" + userToken + "&hash=" + hash;
-
-            // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.REMOVE_FLASHCARD);
-            mConn.execute(getString(R.string.deleteListPhp), mRequest);
-
+            String request = requestBuilder.buildRequest();
             progressBar.setVisibility(View.VISIBLE);
 
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(mConn.getStatus() == AsyncTask.Status.RUNNING) {
-                        mConn.cancel(true);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(MyFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, ConnectionTask.TIME_LIMIT_MS);
+            final ConnectionTask connection = new ConnectionTask(this, ConnectionTask.Mode.REMOVE_FLASHCARD);
+            connection.execute(getString(R.string.deleteListPhp), request);
+            createCancelConnectionHandler(connection);
         }
     }
 
-    /**
-     * Verifies the server response on getFlashcards request.
-     * @param output server response
-     */
-    private void getFlashcards_callback(String output){
+    private void downloadFlashcard(String hash) {
+        if (!Functions.isOnline(getApplicationContext()))
+            Functions.showToast(this, getString(R.string.noConnectionWarning));
+        else {
+            RequestBuilder requestBuilder = new RequestBuilder();
+            requestBuilder.putParameter("hash", hash);
+            requestBuilder.encodeParameters("UTF-8");
+
+            String request = requestBuilder.buildRequest();
+            progressBar.setVisibility(View.VISIBLE);
+
+            final ConnectionTask connection = new ConnectionTask(this, ConnectionTask.Mode.DOWNLOAD_FLASHCARD);
+            connection.execute(getString(R.string.getListContentByHashPhp), request);
+            createCancelConnectionHandler(connection);
+        }
+    }
+
+    private void getFlashcards_callback(String output) {
         JSONObject c;
-        try{
+        try {
             c = new JSONObject(output);
             int listCount = c.getInt("listCount");
 
-            for(int i = 0; i < listCount; ++i){
+            for (int i = 0; i < listCount; ++i) {
                 JSONObject mList = c.getJSONObject("list" + String.valueOf(i));
                 Flashcard sList = new Flashcard();
                 sList.setId(mList.getString("id"));
@@ -345,93 +236,72 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
         }
     }
 
-    /**
-     * Verifies the server response on likeFlashcard request.
-     * @param result server response
-     */
-    private void likeFlashcard_callback(String result){
+    private void likeFlashcard_callback(String result) {
+        int responseCode = Integer.valueOf(result);
 
-        switch(result){
-            case "1":
-                Toast.makeText(MyFlashcardsActivity.this, getString(R.string.likedFlashcard), Toast.LENGTH_LONG).show();
+        switch (responseCode) {
+            case ResponseCode.SUCCESS:
+                Functions.showToast(this, getString(R.string.likedFlashcard));
                 break;
-            case "2":
-                Toast.makeText(MyFlashcardsActivity.this, getString(R.string.tokenIncorrect), Toast.LENGTH_LONG).show();
+            case ResponseCode.TOKEN_INCORRECT:
+                Functions.showToast(this, getString(R.string.tokenIncorrect));
                 logout();
                 break;
-            case "3":
-                Toast.makeText(MyFlashcardsActivity.this, getString(R.string.hashIncorrect), Toast.LENGTH_LONG).show();
+            case ResponseCode.HASH_INCORRECT:
+                Functions.showToast(this, getString(R.string.hashIncorrect));
                 break;
-            case "4":
-                Toast.makeText(MyFlashcardsActivity.this, getString(R.string.flashcardAlreadyLiked), Toast.LENGTH_LONG).show();
+            case ResponseCode.FLASHCARD_ALREADY_LIKED:
+                Functions.showToast(this, getString(R.string.flashcardAlreadyLiked));
                 break;
-            case "5":
-                Toast.makeText(MyFlashcardsActivity.this, getString(R.string.couldNotLike), Toast.LENGTH_LONG).show();
+            case ResponseCode.COULD_NOT_LIKE:
+                Functions.showToast(this, getString(R.string.couldNotLike));
                 break;
         }
     }
 
-    /**
-     * Verifies the server response on removeFlashcard request.
-     * @param output flashcard hash
-     */
-    private void removeFlashcard_callback(String output){
-        switch(output){
-            case "1":
-                Toast.makeText(MyFlashcardsActivity.this, getResources().getString(R.string.flashcardDeleted), Toast.LENGTH_LONG).show();
+    private void removeFlashcard_callback(String output) {
+        int responseCode = Integer.valueOf(output);
+        switch (responseCode) {
+            case ResponseCode.SUCCESS:
+                Functions.showToast(this, getString(R.string.flashcardDeleted));
                 break;
-
-            case "2":
-                Toast.makeText(MyFlashcardsActivity.this, getResources().getString(R.string.tokenIncorrect), Toast.LENGTH_LONG).show();
+            case ResponseCode.TOKEN_INCORRECT:
+                Functions.showToast(this, getString(R.string.tokenIncorrect));
                 logout();
                 break;
-
-            case "3":
-                Toast.makeText(MyFlashcardsActivity.this, getResources().getString(R.string.flashcardNotFound), Toast.LENGTH_LONG).show();
+            case ResponseCode.HASH_INCORRECT:
+                Functions.showToast(this, getString(R.string.flashcardNotFound));
                 break;
-
-            case "4":
-                Toast.makeText(MyFlashcardsActivity.this, getResources().getString(R.string.nonAuthor), Toast.LENGTH_LONG).show();
+            case ResponseCode.NO_PERMISSION:
+                Functions.showToast(this, getString(R.string.nonAuthor));
                 break;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * @param result
-     */
     @Override
     public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
         ConnectionTask.Mode requestMode = ConnectionTask.Mode.valueOf(result.get(ConnectionTask.Key.REQUEST_MODE));
         String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
 
-        if(requestMode == ConnectionTask.Mode.GET_MY_FLASHCARDS)
+        if (requestMode == ConnectionTask.Mode.GET_MY_FLASHCARDS)
             this.getFlashcards_callback(requestResponse);
-        else if(requestMode == ConnectionTask.Mode.LIKE_FLASHCARD)
+        else if (requestMode == ConnectionTask.Mode.LIKE_FLASHCARD)
             this.likeFlashcard_callback(requestResponse);
-        else if(requestMode == ConnectionTask.Mode.REMOVE_FLASHCARD)
+        else if (requestMode == ConnectionTask.Mode.REMOVE_FLASHCARD)
             this.removeFlashcard_callback(requestResponse);
-        else if(requestMode == ConnectionTask.Mode.DOWNLOAD_FLASHCARD)
+        else if (requestMode == ConnectionTask.Mode.DOWNLOAD_FLASHCARD)
             this.downloadFlashcard_callback(requestResponse);
 
-        this.mAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
         progressBar.setVisibility(View.GONE);
-        swiperefresh.setRefreshing(false);
+        swipeRefresher.setRefreshing(false);
     }
 
-    /**
-     * Handles FloatingActionButton click event.
-     * Displays dialog to create new flashcard.
-     * @param view clicked view
-     */
     public void fab_onClick(View view) {
-        // Check if first visit
-        SharedPreferences sharedPreferences = getSharedPreferences("settings", 0);
-        boolean first_visit = sharedPreferences.getBoolean("first_visit", true);
-        if(first_visit){
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("first_visit", false);
-            editor.apply();
+        AppPreferences appPreferences = AppPreferences.getInstance(getApplicationContext());
+        boolean first_visit = appPreferences.getBoolean(AppPreferences.Key.FIRST_VISIT, true);
+        if (first_visit) {
+            appPreferences.put(AppPreferences.Key.FIRST_VISIT, false);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.fiszkiWebInformationAddList));
@@ -440,24 +310,39 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
                     addList();
                 }
             });
-
-            // Create the AlertDialog object and return it
             builder.create().show();
-        }
-        else
+        } else
             addList();
     }
 
-    private void addList(){
-        // custom dialog
+    private String getLangAbbrByIndex(int index) {
+        switch (index) {
+            case 0:
+                return "pl";
+            case 1:
+                return "en";
+            case 2:
+                return "de";
+            case 3:
+                return "es";
+            case 4:
+                return "fr";
+            case 5:
+                return "it";
+            case 6:
+                return "lt";
+            default:
+                return null;
+        }
+    }
+
+    private void addList() {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_list);
 
-        // Create Adapter for Spinner
         ArrayAdapter<String> langAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item, getResources().getStringArray(R.array.languages));
 
-        // dialog components
         final EditText name = dialog.findViewById(R.id.cardName);
         final Spinner spinner1 = dialog.findViewById(R.id.spinner1);
         final Spinner spinner2 = dialog.findViewById(R.id.spinner2);
@@ -466,77 +351,29 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
         Button cancel = dialog.findViewById(R.id.cancelButton);
         ImageView visit_www_banner = dialog.findViewById(R.id.visit_www_banner);
 
-        if(getString(R.string.locale).equals("pl"))
+        dialogHeader.setText(getString(R.string.flashcardName));
+        spinner1.setAdapter(langAdapter);
+        spinner2.setAdapter(langAdapter);
+
+        if (getString(R.string.locale).equals("pl"))
             visit_www_banner.setImageResource(R.drawable.create_www_pl);
         else
             visit_www_banner.setImageResource(R.drawable.create_www_en);
-
-        dialogHeader.setText(getString(R.string.flashcardName));
-
-        spinner1.setAdapter(langAdapter);
-        spinner2.setAdapter(langAdapter);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Flashcard flashcard = new Flashcard();
                 flashcard.setName(name.getText().toString());
-
-                switch(spinner1.getSelectedItemPosition()){
-                    case 0:
-                        flashcard.setLangFrom("pl");
-                        break;
-                    case 1:
-                        flashcard.setLangFrom("en");
-                        break;
-                    case 2:
-                        flashcard.setLangFrom("de");
-                        break;
-                    case 3:
-                        flashcard.setLangFrom("es");
-                        break;
-                    case 4:
-                        flashcard.setLangFrom("fr");
-                        break;
-                    case 5:
-                        flashcard.setLangFrom("it");
-                        break;
-                    case 6:
-                        flashcard.setLangFrom("lt");
-                        break;
-                }
-
-                switch(spinner2.getSelectedItemPosition()){
-                    case 0:
-                        flashcard.setLangTo("pl");
-                        break;
-                    case 1:
-                        flashcard.setLangTo("en");
-                        break;
-                    case 2:
-                        flashcard.setLangTo("de");
-                        break;
-                    case 3:
-                        flashcard.setLangTo("es");
-                        break;
-                    case 4:
-                        flashcard.setLangTo("fr");
-                        break;
-                    case 5:
-                        flashcard.setLangTo("it");
-                        break;
-                    case 6:
-                        flashcard.setLangTo("lt");
-                        break;
-                }
+                flashcard.setLangFrom(getLangAbbrByIndex(spinner1.getSelectedItemPosition()));
+                flashcard.setLangTo(getLangAbbrByIndex(spinner2.getSelectedItemPosition()));
 
                 dialog.dismiss();
 
-                // Run new Activity to add words
                 Intent intent = new Intent(MyFlashcardsActivity.this, PreviewFlashcardActivity.class);
-                intent.putExtra(Constants.PARENT, Constants.MY_FLASHCARDS_ACT);
-                intent.putExtra(Constants.MODE_KEY, Constants.GLOBAL_MODE);
-                intent.putExtra(Constants.LIST, flashcard);
+                intent.putExtra(IntentKey.PARENT_ACTIVITY.name(), IntentValues.MY_FLASHCARD_ACTIVITY);
+                intent.putExtra(IntentKey.ACTIVITY_MODE.name(), Constants.GLOBAL_MODE);
+                intent.putExtra(IntentKey.FLASHCARD.name(), flashcard);
                 startActivity(intent);
             }
         });
@@ -551,88 +388,36 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
         dialog.show();
     }
 
-    /**
-     * Downloads flashcard to save it on local device.
-     * Build POST request and runs ConnectionTask.
-     * @param hash flashcard hash
-     */
-    private void downloadFlashcard(String hash){
-        if(!Functions.isOnline(getApplicationContext()))
-            Toast.makeText(MyFlashcardsActivity.this, getString(R.string.noConnectionWarning), Toast.LENGTH_LONG).show();
-        else{
-            // Encode POST arguments with UTF-8 Encoder
-            try{
-
-                hash = URLEncoder.encode(hash, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            // Build POST Request
-            String mRequest = "hash=" + hash;
-
-            // Create and run ConnectionTask
-            final ConnectionTask mConn = new ConnectionTask(this, ConnectionTask.Mode.DOWNLOAD_FLASHCARD);
-            mConn.execute(getString(R.string.getListContentByHashPhp), mRequest);
-
-            progressBar.setVisibility(View.VISIBLE);
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(mConn.getStatus() == AsyncTask.Status.RUNNING) {
-                        mConn.cancel(true);
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(MyFlashcardsActivity.this, getString(R.string.connectionProblem), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, ConnectionTask.TIME_LIMIT_MS);
-        }
-    }
-
-    /**
-     * Callback from downloadFlashcard task.
-     * Saves the flashcard content on the device.
-     * @param content server response
-     */
-    private void downloadFlashcard_callback(String content){
+    private void downloadFlashcard_callback(String content) {
         File sdCard = new File(android.os.Environment.getExternalStorageDirectory(), "Fiszki");
-        // Create Fiszki folder if does not exist
-        if(!sdCard.exists()) {
+        if (!sdCard.exists()) {
             if (!sdCard.mkdir()) {
-                Toast.makeText(this, getString(R.string.couldNotCreateFolder),
-                        Toast.LENGTH_LONG).show();
+                Functions.showToast(this, getString(R.string.couldNotCreateFolder));
                 return;
             }
         }
 
-        String fileName;
         try {
             JSONObject c = new JSONObject(content);
-            fileName = c.getString("name");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
+            String fileName = c.getString("name");
 
-        try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(sdCard.getAbsolutePath()
-                + File.separator + fileName + ".xyz"));
+                    + File.separator + fileName + ".xyz"));
             writer.write(content);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
             return;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        Toast.makeText(this, getString(R.string.downloaded), Toast.LENGTH_LONG).show();
+        Functions.showToast(this, getString(R.string.downloaded));
     }
 
     private void logout() {
         User.getInstance(this).clearUserData(this);
-
-        Toast.makeText(this, getString(R.string.userLogout), Toast.LENGTH_LONG).show();
+        Functions.showToast(this, getString(R.string.userLogout));
 
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -640,9 +425,69 @@ public class MyFlashcardsActivity extends AppCompatActivity implements AsyncResp
         finish();
     }
 
-    private void runFlashcard(int position){
+    private void runFlashcard(int position) {
         Intent intent = new Intent(MyFlashcardsActivity.this, DisplayFlashcardActivity.class);
-        intent.putExtra(Constants.HASH, mFlashcards.get(position).getHash());
+        intent.putExtra(IntentKey.HASH.name(), mFlashcards.get(position).getHash());
         startActivity(intent);
+    }
+
+    private void previewFlashcard(int position) {
+        Intent intent = new Intent(MyFlashcardsActivity.this, PreviewFlashcardActivity.class);
+        intent.putExtra(IntentKey.FLASHCARD.name(), this.mFlashcards.get(position));
+        intent.putExtra(IntentKey.PARENT_ACTIVITY.name(), IntentValues.MY_FLASHCARD_ACTIVITY);
+        intent.putExtra(IntentKey.ACTIVITY_MODE.name(), Constants.GLOBAL_MODE);
+        startActivity(intent);
+    }
+
+    private void setListeners() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                runFlashcard(position);
+            }
+        });
+
+        swipeRefresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefresher.setRefreshing(true);
+                mAdapter.clear();
+                getUserFlashcards();
+            }
+        });
+    }
+
+    private void createCancelConnectionHandler(final ConnectionTask connection) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (connection.getStatus() == AsyncTask.Status.RUNNING) {
+                    connection.cancel(true);
+                    progressBar.setVisibility(View.GONE);
+                    Functions.showToast(MyFlashcardsActivity.this, getString(R.string.connectionProblem));
+                }
+            }
+        }, ConnectionTask.TIME_LIMIT_MS);
+    }
+
+    private class ContextMenuOption {
+        static final int RUN_FLASHCARD = 0;
+        static final int PREVIEW_FLASHCARD = 1;
+        static final int LIKE_FLASHCARD = 2;
+        static final int SHARE_FLASHCARD = 3;
+        static final int REMOVE_FLASHCARD = 4;
+        static final int DOWNLOAD_FLASHCARD = 5;
+    }
+
+    private class ResponseCode {
+        static final int SUCCESS = 1;
+        static final int TOKEN_INCORRECT = 2;
+        static final int HASH_INCORRECT = 3;
+        static final int FLASHCARD_ALREADY_LIKED = 4;
+        static final int COULD_NOT_LIKE = 5;
+
+        static final int NO_PERMISSION = 4;
+
     }
 }

@@ -4,8 +4,8 @@
 
     <string name="getTokenPhp" translatable="false">https://fiszki.xyz/api/api2/getToken.php</string>
     <string name="registerPhp" translatable="false">https://fiszki.xyz/api/register.php</string>
-    <string name="activateAccountPhp" translatable="false">https://fiszki.xyz/api/activateAccount.php</string>
-    <string name="forgotPasswordPhp" translatable="false">https://fiszki.xyz/api/forgotPassword.php</string>
+    <string name="activateAccountPhp" translatable="false">https://fiszki.xyz/api/api2/activateAccount.php</string>
+    <string name="forgotPasswordPhp" translatable="false">https://fiszki.xyz/api/api2/forgotPassword.php</string>
     <string name="listsByTokenPhp" translatable="false">https://fiszki.xyz/api/listsByToken.php</string>
     <string name="searchByNamePhp" translatable="false">https://fiszki.xyz/api/searchByName.php</string>
     <string name="getListContentByHashPhp" translatable="false">https://fiszki.xyz/api/getListContentByHash.php</string>
@@ -255,5 +255,6 @@
     <string name="readTransAutomatically">Read word translation automatically</string>
     <string name="locale">en</string>
     <string name="flashcardEmpty">Flashcard is empty</string>
+    <string name="nameIncorrect">Given name is incorrect</string>
 
 </resources>

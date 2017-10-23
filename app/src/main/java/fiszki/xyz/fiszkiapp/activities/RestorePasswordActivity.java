@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 import fiszki.xyz.fiszkiapp.R;
@@ -68,30 +71,31 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
     public void processRequestResponse(HashMap<ConnectionTask.Key, String> result) {
         progressBar.setVisibility(View.GONE);
 
+        int responseCode = ResponseCode.INIT_CODE;
         String requestResponse = result.get(ConnectionTask.Key.REQUEST_RESPONSE);
-        int responseCode = Integer.valueOf(requestResponse);
+        try {
+            JSONObject c = new JSONObject(requestResponse);
+            responseCode = c.getInt("status");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         switch(responseCode){
             case ResponseCode.SEND_EMAIL_ERROR:
                 Functions.showToast(this, getString(R.string.emailSendError));
                 break;
-
             case ResponseCode.SUCCESS:
                 Functions.showToast(this, getString(R.string.newPasswordSent));
                 break;
-
             case ResponseCode.DATA_INCORRECT:
                 Functions.showToast(this, getString(R.string.incorrectFormat));
                 break;
-
-            case ResponseCode.USER_NOT_EXIST:
-                Functions.showToast(this, getString(R.string.userNotExist));
+            case ResponseCode.EMAIL_INCORRECT:
+                Functions.showToast(this, getString(R.string.emailIncorrect));
                 break;
-
-            case ResponseCode.NAME_OR_EMAIL_INCORRECT:
-                Functions.showToast(this, getString(R.string.nameOrEmailIncorrect));
+            case ResponseCode.NAME_INCORRECT:
+                Functions.showToast(this, getString(R.string.nameIncorrect));
                 break;
-
             default:
                 Functions.showToast(this, getString(R.string.errorOccurred));
                 break;
@@ -114,10 +118,10 @@ public class RestorePasswordActivity extends AppCompatActivity implements AsyncR
 
     private class ResponseCode {
         static final int INIT_CODE = -1;
-        static final int SEND_EMAIL_ERROR = 0;
         static final int SUCCESS = 1;
-        static final int DATA_INCORRECT = 2;
-        static final int USER_NOT_EXIST = 3;
-        static final int NAME_OR_EMAIL_INCORRECT = 4;
+        static final int SEND_EMAIL_ERROR = 2;
+        static final int DATA_INCORRECT = 3;
+        static final int EMAIL_INCORRECT = 4;
+        static final int NAME_INCORRECT = 5;
     }
 }

@@ -211,7 +211,7 @@
     <string name="result">Wynik</string>
     <string name="yourResultInfo">Twój wynik z Fiszki: $1%s wynosi</string>
     <string name="ttsOnTextClickInfo">Kliknij słówko podczas nauki, aby posłuchać wymowy</string>
-    <string name="fiszkiWebInformationAddList">Możesz szybko i wygodnie dodawać nowe Fiszki na naszej stronie: \\nhttp://www.fiszki.xyz</string>
+    <string name="fiszkiWebInformationAddList">Możesz szybko i wygodnie dodawać nowe Fiszki na naszej stronie: http://www.fiszki.xyz</string>
     <string name="needToLoginAgain">Zostałeś wylogowany.\\nZaloguj się ponownie.</string>
     <string name="reportBug">Zgłaszanie błędów lub sugestii</string>
     <string name="emailSubject">Temat e-maila</string>
@@ -225,5 +225,6 @@
     <string name="readTransAutomatically">Czytaj tłumaczenie słówka automatycznie</string>
     <string name="locale">pl</string>
     <string name="flashcardEmpty">Fiszka jest pusta</string>
+    <string name="nameIncorrect">Podana nazwa użytkownika jest nieprawidłowa</string>
 
 </resources>

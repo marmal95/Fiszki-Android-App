@@ -36,6 +36,8 @@ import fiszki.xyz.fiszkiapp.async_tasks.ConnectionTask;
 import fiszki.xyz.fiszkiapp.utils.Functions;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.source.Flashcard;
+import fiszki.xyz.fiszkiapp.utils.IntentKey;
+import fiszki.xyz.fiszkiapp.utils.IntentValues;
 import fiszki.xyz.fiszkiapp.utils.Pair;
 import fiszki.xyz.fiszkiapp.R;
 import fiszki.xyz.fiszkiapp.source.User;
@@ -72,13 +74,13 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
         this.mAdapter = new WordsAdapter(this, this.mWords);
         this.mListView.setAdapter(this.mAdapter);
 
-        if(getIntent().getIntExtra(Constants.MODE_KEY, Constants.NULL_MODE) == Constants.LOCAL_MODE){
+        if(getIntent().getIntExtra(IntentKey.ACTIVITY_MODE.name(), Constants.NULL_MODE) == Constants.LOCAL_MODE){
             getFlashcardContent_callback(getIntent().getStringExtra(Constants.CONTENT));
             mAdapter.notifyDataSetChanged();
         }
-        else if(getIntent().getIntExtra(Constants.MODE_KEY, Constants.NULL_MODE) == Constants.GLOBAL_MODE) {
+        else if(getIntent().getIntExtra(IntentKey.ACTIVITY_MODE.name(), Constants.NULL_MODE) == Constants.GLOBAL_MODE) {
 
-            if(getIntent().getStringExtra(Constants.PARENT).equals(Constants.MY_FLASHCARDS_ACT)
+            if(getIntent().getStringExtra(IntentKey.PARENT_ACTIVITY.name()).equals(IntentValues.MY_FLASHCARD_ACTIVITY)
                 || User.getInstance(this).getPermission().contains("l")) {
                 registerForContextMenu(mListView);
                 fab.setVisibility(View.VISIBLE);
@@ -90,7 +92,7 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
                 });
             }
 
-            flashcard = getIntent().getParcelableExtra(Constants.LIST);
+            flashcard = getIntent().getParcelableExtra(IntentKey.FLASHCARD.name());
 
             if(flashcard.getHash() != null)
                 getFlashcardContent(flashcard.getHash());
@@ -139,7 +141,7 @@ public class PreviewFlashcardActivity extends AppCompatActivity implements Async
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        if(getIntent().getStringExtra(Constants.PARENT).equals(Constants.MY_FLASHCARDS_ACT)
+        if(getIntent().getStringExtra(IntentKey.PARENT_ACTIVITY.name()).equals(IntentValues.MY_FLASHCARD_ACTIVITY)
                 || User.getInstance(this).getPermission().contains("l"))
             inflater.inflate(R.menu.flashcard_edit_activity_menu, menu);
         else

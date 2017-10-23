@@ -49,6 +49,7 @@ import fiszki.xyz.fiszkiapp.source.Settings;
 import fiszki.xyz.fiszkiapp.source.User;
 import fiszki.xyz.fiszkiapp.utils.Constants;
 import fiszki.xyz.fiszkiapp.utils.Functions;
+import fiszki.xyz.fiszkiapp.utils.IntentKey;
 import fiszki.xyz.fiszkiapp.utils.Pair;
 
 public class DisplayFlashcardActivity extends AppCompatActivity implements AsyncResponse {
@@ -135,7 +136,7 @@ public class DisplayFlashcardActivity extends AppCompatActivity implements Async
         if(savedInstanceState == null)
         {
             flashcard = new Flashcard();
-            flashcard.setHash(getIntent().getStringExtra(Constants.HASH));
+            flashcard.setHash(getIntent().getStringExtra(IntentKey.HASH.name()));
             wordsList = new ArrayList<>();
             errorsList = new ArrayList<>();
             index = 0;

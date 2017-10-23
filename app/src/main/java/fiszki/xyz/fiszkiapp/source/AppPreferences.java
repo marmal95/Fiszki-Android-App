@@ -3,8 +3,6 @@ package fiszki.xyz.fiszkiapp.source;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
-// TODO: Test
 public class AppPreferences {
 
     private static final String SETTINGS_NAME = "default_settings";
@@ -20,13 +18,14 @@ public class AppPreferences {
         USER_FULLNAME,
         USER_PERMISSION,
         USER_TIME_CREATED,
-        USER_LAST_ACTIVITY
+        USER_LAST_ACTIVITY,
+
+        FIRST_VISIT
     }
 
     private AppPreferences(Context context) {
         mPreferences = context.getSharedPreferences(SETTINGS_NAME, Context.MODE_PRIVATE);
     }
-
 
     public static AppPreferences getInstance(Context context) {
         if (appPreferences == null) {
