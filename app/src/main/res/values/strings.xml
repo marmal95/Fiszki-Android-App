@@ -2,25 +2,25 @@
     <string name="interstitial_full_screen" translatable="false">ca-app-pub-7589746352968073/7206581544</string>
     <string name="baner_ad" translatable="false">ca-app-pub-7589746352968073/8899428742</string>
 
-    <string name="getTokenPhp" translatable="false">https://fiszki.xyz/api/api2/getToken.php</string>
-    <string name="registerPhp" translatable="false">https://fiszki.xyz/api/register.php</string>
-    <string name="activateAccountPhp" translatable="false">https://fiszki.xyz/api/api2/activateAccount.php</string>
-    <string name="forgotPasswordPhp" translatable="false">https://fiszki.xyz/api/api2/forgotPassword.php</string>
-    <string name="listsByTokenPhp" translatable="false">https://fiszki.xyz/api/listsByToken.php</string>
-    <string name="searchByNamePhp" translatable="false">https://fiszki.xyz/api/searchByName.php</string>
-    <string name="getListContentByHashPhp" translatable="false">https://fiszki.xyz/api/getListContentByHash.php</string>
-    <string name="likeListPhp" translatable="false">https://fiszki.xyz/api/likeList.php</string>
-    <string name="unlikeListPhp" translatable="false">https://fiszki.xyz/api/unlikeList.php</string>
-    <string name="userInfoByToken" translatable="false">https://fiszki.xyz/api/userInfoByToken.php</string>
-    <string name="editListPhp" translatable="false">https://fiszki.xyz/api/editList.php</string>
-    <string name="addListPhp" translatable="false">https://fiszki.xyz/api/addList.php</string>
-    <string name="searchListByNamePhp" translatable="false">https://fiszki.xyz/api/searchByName.php</string>
-    <string name="deleteAccountPhp" translatable="false">https://fiszki.xyz/api/deleteAccount.php</string>
-    <string name="changeFullNamePhp" translatable="false">https://fiszki.xyz/api/changeFullName.php</string>
-    <string name="changePasswordPhp" translatable="false">https://fiszki.xyz/api/changePassword.php</string>
-    <string name="manageListPhp" translatable="false">https://fiszki.xyz/api/manageList.php</string>
+    <string name="getTokenPhp" translatable="false">http://fiszki-host.ct8.pl/api/api2/getToken.php</string>
+    <string name="registerPhp" translatable="false">http://fiszki-host.ct8.pl/api/register.php</string>
+    <string name="activateAccountPhp" translatable="false">http://fiszki-host.ct8.pl/api/api2/activateAccount.php</string>
+    <string name="forgotPasswordPhp" translatable="false">http://fiszki-host.ct8.pl/api/api2/forgotPassword.php</string>
+    <string name="listsByTokenPhp" translatable="false">http://fiszki-host.ct8.pl/api/listsByToken.php</string>
+    <string name="searchByNamePhp" translatable="false">http://fiszki-host.ct8.pl/api/searchByName.php</string>
+    <string name="getListContentByHashPhp" translatable="false">http://fiszki-host.ct8.pl/api/getListContentByHash.php</string>
+    <string name="likeListPhp" translatable="false">http://fiszki-host.ct8.pl/api/likeList.php</string>
+    <string name="unlikeListPhp" translatable="false">http://fiszki-host.ct8.pl/api/unlikeList.php</string>
+    <string name="userInfoByToken" translatable="false">http://fiszki-host.ct8.pl/api/userInfoByToken.php</string>
+    <string name="editListPhp" translatable="false">http://fiszki-host.ct8.pl/api/editList.php</string>
+    <string name="addListPhp" translatable="false">http://fiszki-host.ct8.pl/api/addList.php</string>
+    <string name="searchListByNamePhp" translatable="false">http://fiszki-host.ct8.pl/api/searchByName.php</string>
+    <string name="deleteAccountPhp" translatable="false">http://fiszki-host.ct8.pl/api/deleteAccount.php</string>
+    <string name="changeFullNamePhp" translatable="false">http://fiszki-host.ct8.pl/api/changeFullName.php</string>
+    <string name="changePasswordPhp" translatable="false">http://fiszki-host.ct8.pl/api/changePassword.php</string>
+    <string name="manageListPhp" translatable="false">http://fiszki-host.ct8.pl/api/manageList.php</string>
 
-    <string name="shareFlashcardUrl" translatable="false">http://fiszki.xyz/flashcard.php?id=%1$s</string>
+    <string name="shareFlashcardUrl" translatable="false">http://fiszki-host.ct8.pl/flashcard.php?id=%1$s</string>
 
     <string name="app_name" translatable="false">Fiszki</string>
     <string name="loginLogoDesc" translatable="false">Login Logo</string>
